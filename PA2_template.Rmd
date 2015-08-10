@@ -62,8 +62,14 @@ health <- data.frame(health_injuries_count,
 #house keeping
 rm(health_injuries_count, health_injuries_sum, health_injuries_mean)
 
+health_top10 <- health[order(health$injuries, decreasing = TRUE),][1:10,]
 
+health_top10
 ```
+
+
+
+
 
 
 ##Results
