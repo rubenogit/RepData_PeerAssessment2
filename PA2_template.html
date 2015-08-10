@@ -100,42 +100,1013 @@ rm(address, zipname)</code></pre>
 </div>
 <div id="explore-the-data" class="section level2">
 <h2>Explore the data</h2>
-<pre class="r"><code>head(stormdata)</code></pre>
-<pre><code>##   STATE__           BGN_DATE BGN_TIME TIME_ZONE COUNTY COUNTYNAME STATE
-## 1       1  4/18/1950 0:00:00     0130       CST     97     MOBILE    AL
-## 2       1  4/18/1950 0:00:00     0145       CST      3    BALDWIN    AL
-## 3       1  2/20/1951 0:00:00     1600       CST     57    FAYETTE    AL
-## 4       1   6/8/1951 0:00:00     0900       CST     89    MADISON    AL
-## 5       1 11/15/1951 0:00:00     1500       CST     43    CULLMAN    AL
-## 6       1 11/15/1951 0:00:00     2000       CST     77 LAUDERDALE    AL
-##    EVTYPE BGN_RANGE BGN_AZI BGN_LOCATI END_DATE END_TIME COUNTY_END
-## 1 TORNADO         0                                               0
-## 2 TORNADO         0                                               0
-## 3 TORNADO         0                                               0
-## 4 TORNADO         0                                               0
-## 5 TORNADO         0                                               0
-## 6 TORNADO         0                                               0
-##   COUNTYENDN END_RANGE END_AZI END_LOCATI LENGTH WIDTH F MAG FATALITIES
-## 1         NA         0                      14.0   100 3   0          0
-## 2         NA         0                       2.0   150 2   0          0
-## 3         NA         0                       0.1   123 2   0          0
-## 4         NA         0                       0.0   100 2   0          0
-## 5         NA         0                       0.0   150 2   0          0
-## 6         NA         0                       1.5   177 2   0          0
-##   INJURIES PROPDMG PROPDMGEXP CROPDMG CROPDMGEXP WFO STATEOFFIC ZONENAMES
-## 1       15    25.0          K       0                                    
-## 2        0     2.5          K       0                                    
-## 3        2    25.0          K       0                                    
-## 4        2     2.5          K       0                                    
-## 5        2     2.5          K       0                                    
-## 6        6     2.5          K       0                                    
-##   LATITUDE LONGITUDE LATITUDE_E LONGITUDE_ REMARKS REFNUM
-## 1     3040      8812       3051       8806              1
-## 2     3042      8755          0          0              2
-## 3     3340      8742          0          0              3
-## 4     3458      8626          0          0              4
-## 5     3412      8642          0          0              5
-## 6     3450      8748          0          0              6</code></pre>
+<pre class="r"><code>#aggregate over health effects i.e. injuries
+#fatalities do no have an effect on population health
+#use !is.na or na.rm to exclude NA's
+health_injuries_count &lt;- aggregate(INJURIES ~ EVTYPE, data=stormdata, function(x) length( !is.na(x)))
+health_injuries_sum &lt;- aggregate(INJURIES ~ EVTYPE, data=stormdata, function(x) sum(x, na.rm = TRUE))
+health_injuries_mean &lt;- aggregate(INJURIES ~ EVTYPE, data=stormdata, function(x) mean(x, na.rm = TRUE))
+
+names(health_injuries_count)[2] &lt;- &quot;number&quot;
+names(health_injuries_sum)[2] &lt;- &quot;injuries&quot;
+names(health_injuries_mean)[2] &lt;- &quot;mean_injuries&quot;
+
+#combine in one dataframe
+health &lt;- data.frame(health_injuries_count,
+                     health_injuries_sum[2],
+                     health_injuries_mean[2]
+                     )
+
+#house keeping
+rm(health_injuries_count, health_injuries_sum, health_injuries_mean)
+
+health</code></pre>
+<pre><code>##                             EVTYPE number injuries mean_injuries
+## 1                                ?      1        0  0.000000e+00
+## 2                   ABNORMALLY DRY      2        0  0.000000e+00
+## 3                   ABNORMALLY WET      1        0  0.000000e+00
+## 4                  ABNORMAL WARMTH      4        0  0.000000e+00
+## 5             ACCUMULATED SNOWFALL      4        0  0.000000e+00
+## 6              AGRICULTURAL FREEZE      6        0  0.000000e+00
+## 7                    APACHE COUNTY      1        0  0.000000e+00
+## 8           ASTRONOMICAL HIGH TIDE    103        0  0.000000e+00
+## 9            ASTRONOMICAL LOW TIDE    174        0  0.000000e+00
+## 10                        AVALANCE      1        0  0.000000e+00
+## 11                       AVALANCHE    386      170  4.404145e-01
+## 12                    BEACH EROSIN      1        0  0.000000e+00
+## 13                   Beach Erosion      1        0  0.000000e+00
+## 14                   BEACH EROSION      3        0  0.000000e+00
+## 15     BEACH EROSION/COASTAL FLOOD      1        0  0.000000e+00
+## 16                     BEACH FLOOD      2        0  0.000000e+00
+## 17      BELOW NORMAL PRECIPITATION      2        0  0.000000e+00
+## 18               BITTER WIND CHILL      1        0  0.000000e+00
+## 19  BITTER WIND CHILL TEMPERATURES      3        0  0.000000e+00
+## 20                       Black Ice      3        0  0.000000e+00
+## 21                       BLACK ICE     14       24  1.714286e+00
+## 22                        BLIZZARD   2719      805  2.960647e-01
+## 23  BLIZZARD AND EXTREME WIND CHIL      2        0  0.000000e+00
+## 24         BLIZZARD AND HEAVY SNOW      1        0  0.000000e+00
+## 25          BLIZZARD/FREEZING RAIN      1        0  0.000000e+00
+## 26             BLIZZARD/HEAVY SNOW      2        0  0.000000e+00
+## 27              BLIZZARD/HIGH WIND      1        0  0.000000e+00
+## 28                Blizzard Summary      1        0  0.000000e+00
+## 29                BLIZZARD WEATHER      1        0  0.000000e+00
+## 30           BLIZZARD/WINTER STORM      1        0  0.000000e+00
+## 31                    BLOWING DUST      4        0  0.000000e+00
+## 32                    blowing snow      2        1  5.000000e-01
+## 33                    Blowing Snow      3        0  0.000000e+00
+## 34                    BLOWING SNOW     12       13  1.083333e+00
+## 35  BLOWING SNOW &amp; EXTREME WIND CH      2        0  0.000000e+00
+## 36  BLOWING SNOW- EXTREME WIND CHI      1        0  0.000000e+00
+## 37  BLOWING SNOW/EXTREME WIND CHIL      1        0  0.000000e+00
+## 38                   BLOW-OUT TIDE      1        0  0.000000e+00
+## 39                  BLOW-OUT TIDES      1        0  0.000000e+00
+## 40                BREAKUP FLOODING      1        0  0.000000e+00
+## 41                      BRUSH FIRE      3        2  6.666667e-01
+## 42                     BRUSH FIRES      1        0  0.000000e+00
+## 43                 COASTAL EROSION      1        0  0.000000e+00
+## 44                   Coastal Flood      6        0  0.000000e+00
+## 45                    COASTALFLOOD      1        0  0.000000e+00
+## 46                   COASTAL FLOOD      1        0  0.000000e+00
+## 47                   COASTAL FLOOD    650        2  3.076923e-03
+## 48                coastal flooding      2        0  0.000000e+00
+## 49                Coastal Flooding     38        0  0.000000e+00
+## 50                COASTAL FLOODING    143        0  0.000000e+00
+## 51       COASTAL  FLOODING/EROSION      1        0  0.000000e+00
+## 52        COASTAL FLOODING/EROSION      5        5  1.000000e+00
+## 53                   Coastal Storm      2        1  5.000000e-01
+## 54                    COASTALSTORM      1        0  0.000000e+00
+## 55                   COASTAL STORM      8        1  1.250000e-01
+## 56                   COASTAL SURGE      2        0  0.000000e+00
+## 57             COASTAL/TIDAL FLOOD      2        0  0.000000e+00
+## 58                            Cold     10        0  0.000000e+00
+## 59                            COLD     72       48  6.666667e-01
+## 60                 COLD AIR FUNNEL      4        0  0.000000e+00
+## 61                COLD AIR FUNNELS      2        0  0.000000e+00
+## 62                COLD AIR TORNADO      1        0  0.000000e+00
+## 63                  Cold and Frost      6        0  0.000000e+00
+## 64                  COLD AND FROST      1        0  0.000000e+00
+## 65                   COLD AND SNOW      1        0  0.000000e+00
+## 66         COLD AND WET CONDITIONS      1        0  0.000000e+00
+## 67                Cold Temperature      2        0  0.000000e+00
+## 68               COLD TEMPERATURES      4        0  0.000000e+00
+## 69                       COLD WAVE      3        0  0.000000e+00
+## 70                    COLD WEATHER      4        0  0.000000e+00
+## 71                 COLD/WIND CHILL    539       12  2.226345e-02
+## 72    COLD WIND CHILL TEMPERATURES      6        0  0.000000e+00
+## 73                      COLD/WINDS      1        0  0.000000e+00
+## 74                    COOL AND WET      1        0  0.000000e+00
+## 75                      COOL SPELL      1        0  0.000000e+00
+## 76           CSTL FLOODING/EROSION      2        0  0.000000e+00
+## 77                 Damaging Freeze      2        0  0.000000e+00
+## 78                 DAMAGING FREEZE      6        0  0.000000e+00
+## 79                       DAM BREAK      4        0  0.000000e+00
+## 80                     DAM FAILURE      1        0  0.000000e+00
+## 81                       DEEP HAIL      1        0  0.000000e+00
+## 82                       DENSE FOG   1293      342  2.645012e-01
+## 83                     DENSE SMOKE     10        0  0.000000e+00
+## 84                       DOWNBURST      2        0  0.000000e+00
+## 85                 DOWNBURST WINDS      2        0  0.000000e+00
+## 86                    DRIEST MONTH      1        0  0.000000e+00
+## 87                   Drifting Snow      1        0  0.000000e+00
+## 88                         DROUGHT   2488        4  1.607717e-03
+## 89          DROUGHT/EXCESSIVE HEAT     13        0  0.000000e+00
+## 90                        DROWNING      1        0  0.000000e+00
+## 91                             DRY      9        0  0.000000e+00
+## 92                  DRY CONDITIONS      6        0  0.000000e+00
+## 93                 DRY HOT WEATHER      1        0  0.000000e+00
+## 94                  DRY MICROBURST    186       28  1.505376e-01
+## 95               DRY MICROBURST 50      1        0  0.000000e+00
+## 96               DRY MICROBURST 53      1        0  0.000000e+00
+## 97               DRY MICROBURST 58      2        0  0.000000e+00
+## 98               DRY MICROBURST 61      1        0  0.000000e+00
+## 99               DRY MICROBURST 84      1        0  0.000000e+00
+## 100           DRY MICROBURST WINDS      5        0  0.000000e+00
+## 101           DRY MIRCOBURST WINDS      1        1  1.000000e+00
+## 102                        DRYNESS      1        0  0.000000e+00
+## 103                    DRY PATTERN      1        0  0.000000e+00
+## 104                      DRY SPELL      4        0  0.000000e+00
+## 105                    DRY WEATHER      4        0  0.000000e+00
+## 106                     DUST DEVEL      1        0  0.000000e+00
+## 107                     Dust Devil      8        1  1.250000e-01
+## 108                     DUST DEVIL    141       42  2.978723e-01
+## 109          DUST DEVIL WATERSPOUT      1        0  0.000000e+00
+## 110                      DUSTSTORM      1        0  0.000000e+00
+## 111                     DUST STORM    427      440  1.030445e+00
+## 112          DUST STORM/HIGH WINDS      1        0  0.000000e+00
+## 113                   EARLY FREEZE      1        0  0.000000e+00
+## 114                    Early Frost      1        0  0.000000e+00
+## 115                    EARLY FROST      1        0  0.000000e+00
+## 116                     EARLY RAIN      1        0  0.000000e+00
+## 117                     EARLY SNOW      3        0  0.000000e+00
+## 118                 Early snowfall      2        0  0.000000e+00
+## 119                 EARLY SNOWFALL      5        0  0.000000e+00
+## 120             Erosion/Cstl Flood      2        0  0.000000e+00
+## 121                      EXCESSIVE      1        0  0.000000e+00
+## 122                 Excessive Cold      2        0  0.000000e+00
+## 123                 EXCESSIVE HEAT   1678     6525  3.888558e+00
+## 124         EXCESSIVE HEAT/DROUGHT      1        0  0.000000e+00
+## 125                EXCESSIVELY DRY      1        0  0.000000e+00
+## 126        EXCESSIVE PRECIPITATION      1        0  0.000000e+00
+## 127                 EXCESSIVE RAIN      5        0  0.000000e+00
+## 128             EXCESSIVE RAINFALL      4       21  5.250000e+00
+## 129                 EXCESSIVE SNOW     25        2  8.000000e-02
+## 130              EXCESSIVE WETNESS      1        0  0.000000e+00
+## 131                  Extended Cold      1        0  0.000000e+00
+## 132                   Extreme Cold      2        0  0.000000e+00
+## 133                   EXTREME COLD    655      231  3.526718e-01
+## 134        EXTREME COLD/WIND CHILL   1002       24  2.395210e-02
+## 135                   EXTREME HEAT     22      155  7.045455e+00
+## 136                  EXTREMELY WET      1        0  0.000000e+00
+## 137            EXTREME/RECORD COLD      4        0  0.000000e+00
+## 138              EXTREME WINDCHILL    204        5  2.450980e-02
+## 139             EXTREME WIND CHILL      6        0  0.000000e+00
+## 140 EXTREME WIND CHILL/BLOWING SNO      1        0  0.000000e+00
+## 141            EXTREME WIND CHILLS      1        0  0.000000e+00
+## 142 EXTREME WINDCHILL TEMPERATURES     19        0  0.000000e+00
+## 143               FALLING SNOW/ICE      2        1  5.000000e-01
+## 144                    FIRST FROST      1        0  0.000000e+00
+## 145                     FIRST SNOW      9        0  0.000000e+00
+## 146                    FLASH FLOOD      1        0  0.000000e+00
+## 147                    FLASH FLOOD  54277     1777  3.273947e-02
+## 148                   FLASH FLOOD/      1        0  0.000000e+00
+## 149              FLASH FLOOD/FLOOD     22        0  0.000000e+00
+## 150             FLASH FLOOD/ FLOOD      2        0  0.000000e+00
+## 151      FLASH FLOOD FROM ICE JAMS      5        0  0.000000e+00
+## 152       FLASH FLOOD - HEAVY RAIN      2        0  0.000000e+00
+## 153         FLASH FLOOD/HEAVY RAIN      1        0  0.000000e+00
+## 154                 FLASH FLOODING    682        8  1.173021e-02
+## 155           FLASH FLOODING/FLOOD      8        0  0.000000e+00
+## 156 FLASH FLOODING/THUNDERSTORM WI      1        0  0.000000e+00
+## 157          FLASH FLOOD/LANDSLIDE      1        0  0.000000e+00
+## 158         FLASH FLOOD LANDSLIDES      1        0  0.000000e+00
+## 159                   FLASH FLOODS     32        0  0.000000e+00
+## 160            FLASH FLOOD/ STREET      1        0  0.000000e+00
+## 161              FLASH FLOOD WINDS      1        0  0.000000e+00
+## 162                FLASH FLOOODING      1        0  0.000000e+00
+## 163                          Flood      1        0  0.000000e+00
+## 164                          FLOOD  25326     6789  2.680644e-01
+## 165                    FLOOD FLASH      3        0  0.000000e+00
+## 166                    FLOOD/FLASH      2        0  0.000000e+00
+## 167              Flood/Flash Flood      1        0  0.000000e+00
+## 168               FLOOD/FLASHFLOOD      1        0  0.000000e+00
+## 169              FLOOD/FLASH FLOOD    624       15  2.403846e-02
+## 170              FLOOD/FLASH/FLOOD      1        0  0.000000e+00
+## 171           FLOOD/FLASH FLOODING      2        0  0.000000e+00
+## 172              FLOOD FLOOD/FLASH      1        0  0.000000e+00
+## 173             FLOOD &amp; HEAVY RAIN      2        0  0.000000e+00
+## 174                       FLOODING    120        2  1.666667e-02
+## 175            FLOODING/HEAVY RAIN      1        0  0.000000e+00
+## 176                FLOOD/RAIN/WIND      1        0  0.000000e+00
+## 177               FLOOD/RAIN/WINDS      6        0  0.000000e+00
+## 178              FLOOD/RIVER FLOOD      1        0  0.000000e+00
+## 179                         FLOODS      3        0  0.000000e+00
+## 180              Flood/Strong Wind      1        0  0.000000e+00
+## 181                   FLOOD WATCH/      1        0  0.000000e+00
+## 182                            FOG    538      734  1.364312e+00
+## 183      FOG AND COLD TEMPERATURES      1        1  1.000000e+00
+## 184                   FOREST FIRES      1        0  0.000000e+00
+## 185                         Freeze      2        0  0.000000e+00
+## 186                         FREEZE     74        0  0.000000e+00
+## 187               Freezing drizzle      1        0  0.000000e+00
+## 188               Freezing Drizzle      3        0  0.000000e+00
+## 189               FREEZING DRIZZLE     20       15  7.500000e-01
+## 190  FREEZING DRIZZLE AND FREEZING      1        0  0.000000e+00
+## 191                   Freezing Fog      1        0  0.000000e+00
+## 192                   FREEZING FOG     45        0  0.000000e+00
+## 193                  Freezing rain      3        0  0.000000e+00
+## 194                  Freezing Rain      7        0  0.000000e+00
+## 195                  FREEZING RAIN    250       23  9.200000e-02
+## 196        FREEZING RAIN AND SLEET      6        0  0.000000e+00
+## 197         FREEZING RAIN AND SNOW      1        0  0.000000e+00
+## 198            FREEZING RAIN/SLEET      9        0  0.000000e+00
+## 199        FREEZING RAIN SLEET AND      1        0  0.000000e+00
+## 200  FREEZING RAIN SLEET AND LIGHT      1        0  0.000000e+00
+## 201             FREEZING RAIN/SNOW      4        0  0.000000e+00
+## 202                 Freezing Spray      1        0  0.000000e+00
+## 203                          Frost      4        0  0.000000e+00
+## 204                          FROST     53        3  5.660377e-02
+## 205                   Frost/Freeze      1        0  0.000000e+00
+## 206                   FROST/FREEZE   1342        0  0.000000e+00
+## 207                  FROST\\FREEZE      1        0  0.000000e+00
+## 208                         FUNNEL     46        0  0.000000e+00
+## 209                   Funnel Cloud      5        0  0.000000e+00
+## 210                   FUNNEL CLOUD   6839        3  4.386606e-04
+## 211                  FUNNEL CLOUD.      1        0  0.000000e+00
+## 212              FUNNEL CLOUD/HAIL      1        0  0.000000e+00
+## 213                  FUNNEL CLOUDS     87        0  0.000000e+00
+## 214                        FUNNELS      1        0  0.000000e+00
+## 215                          Glaze     11        0  0.000000e+00
+## 216                          GLAZE     32      216  6.750000e+00
+## 217                      GLAZE ICE      2        0  0.000000e+00
+## 218                GLAZE/ICE STORM      1       15  1.500000e+01
+## 219                  gradient wind      2        0  0.000000e+00
+## 220                  Gradient wind      4        0  0.000000e+00
+## 221                  GRADIENT WIND      3        0  0.000000e+00
+## 222                 GRADIENT WINDS      8        0  0.000000e+00
+## 223                    GRASS FIRES      1        0  0.000000e+00
+## 224                GROUND BLIZZARD      2        0  0.000000e+00
+## 225                       GUSTNADO      6        0  0.000000e+00
+## 226                   GUSTNADO AND      1        0  0.000000e+00
+## 227                GUSTY LAKE WIND      1        0  0.000000e+00
+## 228        GUSTY THUNDERSTORM WIND      3        0  0.000000e+00
+## 229       GUSTY THUNDERSTORM WINDS      5        0  0.000000e+00
+## 230                     Gusty Wind      1        0  0.000000e+00
+## 231                     GUSTY WIND     23        1  4.347826e-02
+## 232                GUSTY WIND/HAIL      1        0  0.000000e+00
+## 233            GUSTY WIND/HVY RAIN      1        0  0.000000e+00
+## 234                Gusty wind/rain      1        0  0.000000e+00
+## 235                    Gusty winds      2        2  1.000000e+00
+## 236                    Gusty Winds     10        1  1.000000e-01
+## 237                    GUSTY WINDS     53        8  1.509434e-01
+## 238                           HAIL 288661     1361  4.714873e-03
+## 239                     Hail(0.75)      1        0  0.000000e+00
+## 240                       HAIL 075      1        0  0.000000e+00
+## 241                      HAIL 0.75     18        0  0.000000e+00
+## 242                       HAIL 088      1        0  0.000000e+00
+## 243                      HAIL 0.88      1        0  0.000000e+00
+## 244                       HAIL 100     13        0  0.000000e+00
+## 245                      HAIL 1.00      6        0  0.000000e+00
+## 246                       HAIL 125      1        0  0.000000e+00
+## 247                       HAIL 150      2        0  0.000000e+00
+## 248                       HAIL 175     13        0  0.000000e+00
+## 249                      HAIL 1.75      4        0  0.000000e+00
+## 250                     HAIL 1.75)      1        0  0.000000e+00
+## 251                       HAIL 200      1        0  0.000000e+00
+## 252                       HAIL 225      1        0  0.000000e+00
+## 253                       HAIL 275      3        0  0.000000e+00
+## 254                       HAIL 450      1        0  0.000000e+00
+## 255                        HAIL 75     29        0  0.000000e+00
+## 256                        HAIL 80      2        0  0.000000e+00
+## 257                        HAIL 88      1        0  0.000000e+00
+## 258                     HAIL ALOFT      1        0  0.000000e+00
+## 259                    HAIL DAMAGE      2        0  0.000000e+00
+## 260                  HAIL FLOODING      1        0  0.000000e+00
+## 261                 HAIL/ICY ROADS      1        0  0.000000e+00
+## 262                      HAILSTORM      3        0  0.000000e+00
+## 263                     HAIL STORM      1        0  0.000000e+00
+## 264                     HAILSTORMS      1        0  0.000000e+00
+## 265                      HAIL/WIND      3        0  0.000000e+00
+## 266                     HAIL/WINDS      2        0  0.000000e+00
+## 267                    HARD FREEZE      7        0  0.000000e+00
+## 268                 HAZARDOUS SURF      1        1  1.000000e+00
+## 269                           HEAT    767     2100  2.737940e+00
+## 270                      Heatburst      1        0  0.000000e+00
+## 271                   HEAT DROUGHT      1        0  0.000000e+00
+## 272                   HEAT/DROUGHT      1        0  0.000000e+00
+## 273                      Heat Wave      1       70  7.000000e+01
+## 274                      HEAT WAVE     74      309  4.175676e+00
+## 275              HEAT WAVE DROUGHT      1       15  1.500000e+01
+## 276                     HEAT WAVES      2        0  0.000000e+00
+## 277                HEAVY LAKE SNOW     25        0  0.000000e+00
+## 278                      HEAVY MIX      8        0  0.000000e+00
+## 279            HEAVY PRECIPATATION      1        0  0.000000e+00
+## 280            Heavy Precipitation      2        0  0.000000e+00
+## 281            HEAVY PRECIPITATION      1        0  0.000000e+00
+## 282                     Heavy rain      3        0  0.000000e+00
+## 283                     Heavy Rain     16        0  0.000000e+00
+## 284                     HEAVY RAIN  11723      251  2.141090e-02
+## 285           HEAVY RAIN AND FLOOD      1        0  0.000000e+00
+## 286            Heavy Rain and Wind      4        0  0.000000e+00
+## 287             HEAVY RAIN EFFECTS      1        0  0.000000e+00
+## 288                 HEAVY RAINFALL      3        0  0.000000e+00
+## 289            HEAVY RAIN/FLOODING      2        0  0.000000e+00
+## 290           Heavy Rain/High Surf      1        0  0.000000e+00
+## 291           HEAVY RAIN/LIGHTNING      1        0  0.000000e+00
+## 292     HEAVY RAIN/MUDSLIDES/FLOOD      1        0  0.000000e+00
+## 293                    HEAVY RAINS     26        4  1.538462e-01
+## 294      HEAVY RAIN/SEVERE WEATHER      2        0  0.000000e+00
+## 295           HEAVY RAINS/FLOODING      9        0  0.000000e+00
+## 296  HEAVY RAIN/SMALL STREAM URBAN      1        0  0.000000e+00
+## 297                HEAVY RAIN/SNOW      1        0  0.000000e+00
+## 298         HEAVY RAIN/URBAN FLOOD      1        0  0.000000e+00
+## 299 HEAVY RAIN; URBAN FLOOD WINDS;      1        0  0.000000e+00
+## 300                HEAVY RAIN/WIND      4        0  0.000000e+00
+## 301                     HEAVY SEAS      2        0  0.000000e+00
+## 302                   HEAVY SHOWER      2        0  0.000000e+00
+## 303                  HEAVY SHOWERS      1        0  0.000000e+00
+## 304                     HEAVY SNOW  15708     1021  6.499873e-02
+## 305                 HEAVY SNOW AND      1        0  0.000000e+00
+## 306     HEAVY SNOW ANDBLOWING SNOW      1        0  0.000000e+00
+## 307      HEAVY SNOW AND HIGH WINDS      2        0  0.000000e+00
+## 308             HEAVY SNOW AND ICE      2        0  0.000000e+00
+## 309       HEAVY SNOW AND ICE STORM      2        0  0.000000e+00
+## 310    HEAVY SNOW AND STRONG WINDS      1        0  0.000000e+00
+## 311            HEAVY SNOW/BLIZZARD      3        0  0.000000e+00
+## 312  HEAVY SNOW/BLIZZARD/AVALANCHE      1        1  1.000000e+00
+## 313        HEAVY SNOW/BLOWING SNOW      1        0  0.000000e+00
+## 314     HEAVY SNOW   FREEZING RAIN      1        0  0.000000e+00
+## 315       HEAVY SNOW/FREEZING RAIN      2        0  0.000000e+00
+## 316                HEAVY SNOW/HIGH      1        0  0.000000e+00
+## 317           HEAVY SNOW/HIGH WIND      1        0  0.000000e+00
+## 318          HEAVY SNOW/HIGH WINDS      1        0  0.000000e+00
+## 319  HEAVY SNOW/HIGH WINDS &amp; FLOOD      1        0  0.000000e+00
+## 320 HEAVY SNOW/HIGH WINDS/FREEZING      1        0  0.000000e+00
+## 321               HEAVY SNOW &amp; ICE      1        0  0.000000e+00
+## 322                 HEAVY SNOW/ICE      5       10  2.000000e+00
+## 323           HEAVY SNOW/ICE STORM      2        0  0.000000e+00
+## 324                 HEAVY SNOWPACK      1        0  0.000000e+00
+## 325              Heavy snow shower      1        2  2.000000e+00
+## 326               HEAVY SNOW/SLEET      1        0  0.000000e+00
+## 327             HEAVY SNOW SQUALLS     32        0  0.000000e+00
+## 328             HEAVY SNOW-SQUALLS     15        0  0.000000e+00
+## 329             HEAVY SNOW/SQUALLS      2        0  0.000000e+00
+## 330                HEAVY SNOW/WIND      1        0  0.000000e+00
+## 331        HEAVY SNOW/WINTER STORM      1        0  0.000000e+00
+## 332                     Heavy Surf      3        0  0.000000e+00
+## 333                     HEAVY SURF     84       40  4.761905e-01
+## 334            Heavy surf and wind      1        0  0.000000e+00
+## 335    HEAVY SURF COASTAL FLOODING      1        0  0.000000e+00
+## 336           HEAVY SURF/HIGH SURF    228       48  2.105263e-01
+## 337                   HEAVY SWELLS      1        0  0.000000e+00
+## 338                 HEAVY WET SNOW      1        0  0.000000e+00
+## 339                           HIGH      1        1  1.000000e+00
+## 340                      HIGH SEAS      8        8  1.000000e+00
+## 341                      High Surf      9        4  4.444444e-01
+## 342                      HIGH SURF    725      152  2.096552e-01
+## 343           HIGH SURF ADVISORIES      1        0  0.000000e+00
+## 344             HIGH SURF ADVISORY      1        0  0.000000e+00
+## 345             HIGH SURF ADVISORY      4        0  0.000000e+00
+## 346                    HIGH SWELLS      5        0  0.000000e+00
+## 347                   HIGH  SWELLS      1        0  0.000000e+00
+## 348        HIGH TEMPERATURE RECORD      3        0  0.000000e+00
+## 349                     HIGH TIDES      2        0  0.000000e+00
+## 350                     HIGH WATER      6        0  0.000000e+00
+## 351                     HIGH WAVES      3        0  0.000000e+00
+## 352               HIGHWAY FLOODING      1        0  0.000000e+00
+## 353                      High Wind      2        0  0.000000e+00
+## 354                      HIGH WIND  20212     1137  5.625371e-02
+## 355                   HIGH WIND 48      1        1  1.000000e+00
+## 356                   HIGH WIND 63      1        0  0.000000e+00
+## 357                   HIGH WIND 70      1        0  0.000000e+00
+## 358       HIGH WIND AND HEAVY SNOW      1        0  0.000000e+00
+## 359       HIGH WIND AND HIGH TIDES      2        0  0.000000e+00
+## 360             HIGH WIND AND SEAS      1       20  2.000000e+01
+## 361             HIGH WIND/BLIZZARD      6        0  0.000000e+00
+## 362            HIGH WIND/ BLIZZARD      1        0  0.000000e+00
+## 363 HIGH WIND/BLIZZARD/FREEZING RA      1        0  0.000000e+00
+## 364               HIGH WIND DAMAGE      2        0  0.000000e+00
+## 365                HIGH WIND (G40)      2        0  0.000000e+00
+## 366           HIGH WIND/HEAVY SNOW      3        1  3.333333e-01
+## 367       HIGH WIND/LOW WIND CHILL      1        0  0.000000e+00
+## 368                     HIGH WINDS   1533      302  1.969993e-01
+## 369                    HIGH  WINDS      1        0  0.000000e+00
+## 370                    HIGH WINDS/      1        0  0.000000e+00
+## 371                  HIGH WINDS 55      1        0  0.000000e+00
+## 372                  HIGH WINDS 57      1        0  0.000000e+00
+## 373                  HIGH WINDS 58      1        0  0.000000e+00
+## 374                  HIGH WINDS 63      2        0  0.000000e+00
+## 375                  HIGH WINDS 66      2        0  0.000000e+00
+## 376                  HIGH WINDS 67      1        0  0.000000e+00
+## 377                  HIGH WINDS 73      1        0  0.000000e+00
+## 378                  HIGH WINDS 76      1        0  0.000000e+00
+## 379                  HIGH WINDS 80      2        0  0.000000e+00
+## 380                  HIGH WINDS 82      1        0  0.000000e+00
+## 381      HIGH WINDS AND WIND CHILL      1        0  0.000000e+00
+## 382       HIGH WINDS/COASTAL FLOOD      1        0  0.000000e+00
+## 383                HIGH WINDS/COLD      5        4  8.000000e-01
+## 384          HIGH WINDS DUST STORM      1        0  0.000000e+00
+## 385                 HIGH WIND/SEAS      1        0  0.000000e+00
+## 386            HIGH WINDS/FLOODING      1        0  0.000000e+00
+## 387          HIGH WINDS/HEAVY RAIN      1        0  0.000000e+00
+## 388         HIGH WINDS HEAVY RAINS      1        0  0.000000e+00
+## 389                HIGH WINDS/SNOW      3        6  2.000000e+00
+## 390           HIGH WIND/WIND CHILL      1        0  0.000000e+00
+## 391  HIGH WIND/WIND CHILL/BLIZZARD      1        0  0.000000e+00
+## 392                    Hot and Dry      2        0  0.000000e+00
+## 393                HOT/DRY PATTERN      1        0  0.000000e+00
+## 394                    HOT PATTERN      1        0  0.000000e+00
+## 395                      HOT SPELL      2        0  0.000000e+00
+## 396                    HOT WEATHER      1        0  0.000000e+00
+## 397                      HURRICANE    174       46  2.643678e-01
+## 398              Hurricane Edouard      2        2  1.000000e+00
+## 399                HURRICANE EMILY      1        1  1.000000e+00
+## 400                 HURRICANE ERIN      7        1  1.428571e-01
+## 401                HURRICANE FELIX      2        0  0.000000e+00
+## 402     HURRICANE-GENERATED SWELLS      3        2  6.666667e-01
+## 403               HURRICANE GORDON      1        0  0.000000e+00
+## 404                 HURRICANE OPAL      9        1  1.111111e-01
+## 405      HURRICANE OPAL/HIGH WINDS      1        0  0.000000e+00
+## 406              HURRICANE/TYPHOON     88     1275  1.448864e+01
+## 407                       HVY RAIN      2        0  0.000000e+00
+## 408          HYPERTHERMIA/EXPOSURE      1        0  0.000000e+00
+## 409                    HYPOTHERMIA      1        0  0.000000e+00
+## 410           Hypothermia/Exposure      3        0  0.000000e+00
+## 411           HYPOTHERMIA/EXPOSURE      3        0  0.000000e+00
+## 412                            ICE     61      137  2.245902e+00
+## 413                   ICE AND SNOW      1        0  0.000000e+00
+## 414                      ICE FLOES      2        0  0.000000e+00
+## 415                        Ice Fog      2        0  0.000000e+00
+## 416                        ICE JAM      4        0  0.000000e+00
+## 417               ICE JAM FLOODING      5        0  0.000000e+00
+## 418           Ice jam flood (minor      1        0  0.000000e+00
+## 419                    ICE ON ROAD      1        0  0.000000e+00
+## 420                    ICE PELLETS      1        0  0.000000e+00
+## 421                      ICE ROADS      1        1  1.000000e+00
+## 422                       Ice/Snow      2        0  0.000000e+00
+## 423                       ICE/SNOW      3        0  0.000000e+00
+## 424                      ICE STORM   2006     1975  9.845464e-01
+## 425             ICE STORM AND SNOW      1        0  0.000000e+00
+## 426              Icestorm/Blizzard      1        0  0.000000e+00
+## 427          ICE STORM/FLASH FLOOD      1        2  2.000000e+00
+## 428               ICE/STRONG WINDS      1        0  0.000000e+00
+## 429                      Icy Roads      4        0  0.000000e+00
+## 430                      ICY ROADS     28       31  1.107143e+00
+## 431                   LACK OF SNOW      1        0  0.000000e+00
+## 432               Lake Effect Snow      2        0  0.000000e+00
+## 433               LAKE EFFECT SNOW     21        0  0.000000e+00
+## 434               LAKE-EFFECT SNOW    636        0  0.000000e+00
+## 435                     LAKE FLOOD      1        0  0.000000e+00
+## 436                LAKESHORE FLOOD     23        0  0.000000e+00
+## 437                      LANDSLIDE    600       52  8.666667e-02
+## 438                     LANDSLIDES      8        1  1.250000e-01
+## 439          LANDSLIDE/URBAN FLOOD      1        0  0.000000e+00
+## 440                      Landslump      1        0  0.000000e+00
+## 441                      LANDSLUMP      1        0  0.000000e+00
+## 442                      LANDSPOUT      2        0  0.000000e+00
+## 443               LARGE WALL CLOUD      1        0  0.000000e+00
+## 444                    LATE FREEZE      1        0  0.000000e+00
+## 445               LATE SEASON HAIL      1        0  0.000000e+00
+## 446               LATE SEASON SNOW      1        0  0.000000e+00
+## 447           Late-season Snowfall      1        0  0.000000e+00
+## 448           Late Season Snowfall      2        0  0.000000e+00
+## 449                      LATE SNOW      2        0  0.000000e+00
+## 450            LIGHT FREEZING RAIN     23        0  0.000000e+00
+## 451                       LIGHTING      3        0  0.000000e+00
+## 452                      LIGHTNING  15754     5230  3.319792e-01
+## 453                      LIGHTNING      1        0  0.000000e+00
+## 454                     LIGHTNING.      1        0  0.000000e+00
+## 455       LIGHTNING AND HEAVY RAIN      1        0  0.000000e+00
+## 456 LIGHTNING AND THUNDERSTORM WIN      1        1  1.000000e+00
+## 457            LIGHTNING AND WINDS      1        0  0.000000e+00
+## 458               LIGHTNING DAMAGE      1        0  0.000000e+00
+## 459                 LIGHTNING FIRE      1        0  0.000000e+00
+## 460           LIGHTNING/HEAVY RAIN      1        0  0.000000e+00
+## 461               LIGHTNING INJURY      1        1  1.000000e+00
+## 462   LIGHTNING THUNDERSTORM WINDS      1        0  0.000000e+00
+## 463  LIGHTNING THUNDERSTORM WINDSS      1        0  0.000000e+00
+## 464             LIGHTNING  WAUSEON      1        0  0.000000e+00
+## 465                     Light snow      1        0  0.000000e+00
+## 466                     Light Snow     21        0  0.000000e+00
+## 467                     LIGHT SNOW    154        2  1.298701e-02
+## 468           LIGHT SNOW AND SLEET      2        0  0.000000e+00
+## 469                 Light Snowfall      1        0  0.000000e+00
+## 470            Light Snow/Flurries      3        0  0.000000e+00
+## 471     LIGHT SNOW/FREEZING PRECIP      1        0  0.000000e+00
+## 472                      LIGNTNING      1        0  0.000000e+00
+## 473              LOCAL FLASH FLOOD      1        0  0.000000e+00
+## 474                    LOCAL FLOOD      1        0  0.000000e+00
+## 475             LOCALLY HEAVY RAIN      1        0  0.000000e+00
+## 476                LOW TEMPERATURE      7        0  0.000000e+00
+## 477         LOW TEMPERATURE RECORD      1        0  0.000000e+00
+## 478                 LOW WIND CHILL      1        0  0.000000e+00
+## 479                    MAJOR FLOOD      3        0  0.000000e+00
+## 480                Marine Accident      1        2  2.000000e+00
+## 481                    MARINE HAIL    442        0  0.000000e+00
+## 482               MARINE HIGH WIND    135        1  7.407407e-03
+## 483                  MARINE MISHAP      2        5  2.500000e+00
+## 484             MARINE STRONG WIND     48       22  4.583333e-01
+## 485       MARINE THUNDERSTORM WIND   5812       26  4.473503e-03
+## 486               MARINE TSTM WIND   6175        8  1.295547e-03
+## 487            Metro Storm, May 26      1        0  0.000000e+00
+## 488                     Microburst      4        0  0.000000e+00
+## 489                     MICROBURST      5        0  0.000000e+00
+## 490               MICROBURST WINDS      5        0  0.000000e+00
+## 491           Mild and Dry Pattern      1        0  0.000000e+00
+## 492               MILD/DRY PATTERN      1        0  0.000000e+00
+## 493                   MILD PATTERN      1        0  0.000000e+00
+## 494                    MINOR FLOOD      1        0  0.000000e+00
+## 495                 Minor Flooding      1        0  0.000000e+00
+## 496                 MINOR FLOODING      3        0  0.000000e+00
+## 497                   MIXED PRECIP     10       26  2.600000e+00
+## 498            Mixed Precipitation      3        0  0.000000e+00
+## 499            MIXED PRECIPITATION     34        0  0.000000e+00
+## 500                  MODERATE SNOW      1        0  0.000000e+00
+## 501              MODERATE SNOWFALL    101        0  0.000000e+00
+## 502          MONTHLY PRECIPITATION     36        0  0.000000e+00
+## 503               Monthly Rainfall      2        0  0.000000e+00
+## 504               MONTHLY RAINFALL     11        0  0.000000e+00
+## 505               Monthly Snowfall      1        0  0.000000e+00
+## 506               MONTHLY SNOWFALL      1        0  0.000000e+00
+## 507            MONTHLY TEMPERATURE      4        0  0.000000e+00
+## 508                 Mountain Snows      1        0  0.000000e+00
+## 509                 MUD/ROCK SLIDE      1        0  0.000000e+00
+## 510                       Mudslide      8        2  2.500000e-01
+## 511                       MUDSLIDE      9        0  0.000000e+00
+## 512                      MUD SLIDE      7        0  0.000000e+00
+## 513             MUDSLIDE/LANDSLIDE      1        0  0.000000e+00
+## 514                      Mudslides      5        0  0.000000e+00
+## 515                      MUDSLIDES      4        0  0.000000e+00
+## 516                     MUD SLIDES      1        0  0.000000e+00
+## 517      MUD SLIDES URBAN FLOODING      1        0  0.000000e+00
+## 518               NEAR RECORD SNOW      1        0  0.000000e+00
+## 519                           NONE      2        0  0.000000e+00
+## 520                NON SEVERE HAIL      7        0  0.000000e+00
+## 521         NON-SEVERE WIND DAMAGE      1        7  7.000000e+00
+## 522                  NON TSTM WIND      2        1  5.000000e-01
+## 523                  NON-TSTM WIND      1        0  0.000000e+00
+## 524           NORMAL PRECIPITATION      3        0  0.000000e+00
+## 525                NORTHERN LIGHTS      1        0  0.000000e+00
+## 526              No Severe Weather      1        0  0.000000e+00
+## 527                          Other      4        0  0.000000e+00
+## 528                          OTHER     48        4  8.333333e-02
+## 529               PATCHY DENSE FOG      3        0  0.000000e+00
+## 530                     PATCHY ICE      1        0  0.000000e+00
+## 531                   Prolong Cold      5        0  0.000000e+00
+## 532                   PROLONG COLD     17        0  0.000000e+00
+## 533              PROLONG COLD/SNOW      1        0  0.000000e+00
+## 534                 PROLONGED RAIN      4        0  0.000000e+00
+## 535                 PROLONG WARMTH      4        0  0.000000e+00
+## 536                           RAIN     16        0  0.000000e+00
+## 537                  RAIN AND WIND      1        0  0.000000e+00
+## 538                    Rain Damage      1        0  0.000000e+00
+## 539                   RAIN (HEAVY)      1        0  0.000000e+00
+## 540                      RAIN/SNOW      5        2  4.000000e-01
+## 541                      RAINSTORM      1        0  0.000000e+00
+## 542                      RAIN/WIND      1        0  0.000000e+00
+## 543           RAPIDLY RISING WATER      1        0  0.000000e+00
+## 544                    Record Cold      3        0  0.000000e+00
+## 545                    RECORD COLD     64        0  0.000000e+00
+## 546                   RECORD  COLD      1        0  0.000000e+00
+## 547      RECORD COLD AND HIGH WIND      1        0  0.000000e+00
+## 548              RECORD COLD/FROST      2        0  0.000000e+00
+## 549                    RECORD COOL      5        0  0.000000e+00
+## 550               Record dry month      1        0  0.000000e+00
+## 551                 RECORD DRYNESS      2        0  0.000000e+00
+## 552          RECORD/EXCESSIVE HEAT      3        0  0.000000e+00
+## 553      RECORD/EXCESSIVE RAINFALL      1        0  0.000000e+00
+## 554                    Record Heat      1        0  0.000000e+00
+## 555                    RECORD HEAT     81       50  6.172840e-01
+## 556               RECORD HEAT WAVE      1        0  0.000000e+00
+## 557                    Record High      2        0  0.000000e+00
+## 558                    RECORD HIGH      5        0  0.000000e+00
+## 559        RECORD HIGH TEMPERATURE      3        0  0.000000e+00
+## 560       RECORD HIGH TEMPERATURES      1        0  0.000000e+00
+## 561                     RECORD LOW      4        0  0.000000e+00
+## 562            RECORD LOW RAINFALL      2        0  0.000000e+00
+## 563                Record May Snow      1        0  0.000000e+00
+## 564           RECORD PRECIPITATION      1        0  0.000000e+00
+## 565                RECORD RAINFALL     14        0  0.000000e+00
+## 566                    RECORD SNOW      8        0  0.000000e+00
+## 567               RECORD SNOW/COLD      1        0  0.000000e+00
+## 568                RECORD SNOWFALL      6        0  0.000000e+00
+## 569             Record temperature     11        0  0.000000e+00
+## 570             RECORD TEMPERATURE      5        0  0.000000e+00
+## 571            Record Temperatures      2        0  0.000000e+00
+## 572            RECORD TEMPERATURES      3        0  0.000000e+00
+## 573                    RECORD WARM      1        0  0.000000e+00
+## 574             RECORD WARM TEMPS.      1        0  0.000000e+00
+## 575                  Record Warmth      8        0  0.000000e+00
+## 576                  RECORD WARMTH    146        0  0.000000e+00
+## 577             Record Winter Snow      3        0  0.000000e+00
+## 578              RED FLAG CRITERIA      2        0  0.000000e+00
+## 579               RED FLAG FIRE WX      2        0  0.000000e+00
+## 580              REMNANTS OF FLOYD      2        0  0.000000e+00
+## 581                    RIP CURRENT    470      232  4.936170e-01
+## 582                   RIP CURRENTS    304      297  9.769737e-01
+## 583        RIP CURRENTS HEAVY SURF      1        0  0.000000e+00
+## 584        RIP CURRENTS/HEAVY SURF      2        0  0.000000e+00
+## 585         RIVER AND STREAM FLOOD      2        0  0.000000e+00
+## 586                    RIVER FLOOD    173        2  1.156069e-02
+## 587                 River Flooding      5        1  2.000000e-01
+## 588                 RIVER FLOODING     24        0  0.000000e+00
+## 589                     ROCK SLIDE      2        0  0.000000e+00
+## 590                     ROGUE WAVE      1        2  2.000000e+00
+## 591            ROTATING WALL CLOUD      5        0  0.000000e+00
+## 592                     ROUGH SEAS      3        5  1.666667e+00
+## 593                     ROUGH SURF      4        1  2.500000e-01
+## 594                    RURAL FLOOD      2        0  0.000000e+00
+## 595                   Saharan Dust      2        0  0.000000e+00
+## 596                   SAHARAN DUST      2        0  0.000000e+00
+## 597              Seasonal Snowfall      1        0  0.000000e+00
+## 598                         SEICHE     21        0  0.000000e+00
+## 599                    SEVERE COLD      1        0  0.000000e+00
+## 600            SEVERE THUNDERSTORM     13        0  0.000000e+00
+## 601           SEVERE THUNDERSTORMS     23        0  0.000000e+00
+## 602      SEVERE THUNDERSTORM WINDS      5        0  0.000000e+00
+## 603              SEVERE TURBULENCE      1        0  0.000000e+00
+## 604                          SLEET     59        0  0.000000e+00
+## 605          SLEET &amp; FREEZING RAIN      1        0  0.000000e+00
+## 606            SLEET/FREEZING RAIN      2        0  0.000000e+00
+## 607                SLEET/ICE STORM      1        0  0.000000e+00
+## 608                SLEET/RAIN/SNOW      1        0  0.000000e+00
+## 609                     SLEET/SNOW      2        0  0.000000e+00
+## 610                    SLEET STORM     12        0  0.000000e+00
+## 611                     small hail      5        0  0.000000e+00
+## 612                     Small Hail      1        0  0.000000e+00
+## 613                     SMALL HAIL     47       10  2.127660e-01
+## 614                   SMALL STREAM      1        0  0.000000e+00
+## 615               SMALL STREAM AND      1        0  0.000000e+00
+## 616   SMALL STREAM AND URBAN FLOOD      2        0  0.000000e+00
+## 617 SMALL STREAM AND URBAN FLOODIN      1        0  0.000000e+00
+## 618             SMALL STREAM FLOOD      7        0  0.000000e+00
+## 619          SMALL STREAM FLOODING      4        0  0.000000e+00
+## 620       SMALL STREAM URBAN FLOOD      1        0  0.000000e+00
+## 621       SMALL STREAM/URBAN FLOOD      5        0  0.000000e+00
+## 622                 Sml Stream Fld      2        0  0.000000e+00
+## 623                          SMOKE     11        0  0.000000e+00
+## 624                           Snow     30        2  6.666667e-02
+## 625                           SNOW    587       29  4.940375e-02
+## 626              Snow Accumulation      1        0  0.000000e+00
+## 627              SNOW ACCUMULATION      1        0  0.000000e+00
+## 628                  SNOW ADVISORY      1        0  0.000000e+00
+## 629                  SNOW AND COLD      2        0  0.000000e+00
+## 630            SNOW AND HEAVY SNOW      2        0  0.000000e+00
+## 631                   Snow and Ice      1        0  0.000000e+00
+## 632                   SNOW AND ICE     33        1  3.030303e-02
+## 633             SNOW AND ICE STORM      1        0  0.000000e+00
+## 634                 Snow and sleet      1        0  0.000000e+00
+## 635                 SNOW AND SLEET      4        0  0.000000e+00
+## 636                  SNOW AND WIND      1        0  0.000000e+00
+## 637              SNOW/ BITTER COLD      1        0  0.000000e+00
+## 638              SNOW/BLOWING SNOW      7        0  0.000000e+00
+## 639                      SNOW/COLD      2        0  0.000000e+00
+## 640                     SNOW\\COLD      1        0  0.000000e+00
+## 641                   SNOW DROUGHT      7        0  0.000000e+00
+## 642                SNOWFALL RECORD      1        0  0.000000e+00
+## 643             SNOW FREEZING RAIN     11        0  0.000000e+00
+## 644             SNOW/FREEZING RAIN      6        0  0.000000e+00
+## 645                SNOW/HEAVY SNOW      1        0  0.000000e+00
+## 646                SNOW/HIGH WINDS      2       36  1.800000e+01
+## 647    SNOW- HIGH WIND- WIND CHILL      1        0  0.000000e+00
+## 648                       SNOW/ICE      7        0  0.000000e+00
+## 649                      SNOW/ ICE      1        0  0.000000e+00
+## 650                 SNOW/ICE STORM     17        0  0.000000e+00
+## 651              SNOWMELT FLOODING      5        0  0.000000e+00
+## 652                      SNOW/RAIN      1        0  0.000000e+00
+## 653                SNOW/RAIN/SLEET      1        0  0.000000e+00
+## 654                   SNOW SHOWERS      6        0  0.000000e+00
+## 655                     SNOW SLEET      1        0  0.000000e+00
+## 656                     SNOW/SLEET     10        0  0.000000e+00
+## 657       SNOW/SLEET/FREEZING RAIN      6        0  0.000000e+00
+## 658                SNOW/SLEET/RAIN      1        0  0.000000e+00
+## 659                    SNOW SQUALL     19       35  1.842105e+00
+## 660                   Snow squalls      1        0  0.000000e+00
+## 661                   Snow Squalls      4        0  0.000000e+00
+## 662                   SNOW SQUALLS     17        0  0.000000e+00
+## 663                      SNOWSTORM      1        0  0.000000e+00
+## 664                      SOUTHEAST      1        0  0.000000e+00
+## 665              STORM FORCE WINDS      1        0  0.000000e+00
+## 666                    STORM SURGE    261       38  1.455939e-01
+## 667               STORM SURGE/TIDE    148        5  3.378378e-02
+## 668                STREAM FLOODING      1        0  0.000000e+00
+## 669                   STREET FLOOD      3        0  0.000000e+00
+## 670                STREET FLOODING      3        0  0.000000e+00
+## 671                    Strong Wind      3        0  0.000000e+00
+## 672                    STRONG WIND   3566      280  7.851935e-02
+## 673               STRONG WIND GUST      2        0  0.000000e+00
+## 674                   Strong winds      1        0  0.000000e+00
+## 675                   Strong Winds      7        0  0.000000e+00
+## 676                   STRONG WINDS    196       21  1.071429e-01
+## 677              Summary August 10      2        0  0.000000e+00
+## 678              Summary August 11      2        0  0.000000e+00
+## 679              Summary August 17      1        0  0.000000e+00
+## 680              Summary August 21      1        0  0.000000e+00
+## 681             Summary August 2-3      1        0  0.000000e+00
+## 682              Summary August 28      1        0  0.000000e+00
+## 683               Summary August 4      1        0  0.000000e+00
+## 684               Summary August 7      1        0  0.000000e+00
+## 685               Summary August 9      1        0  0.000000e+00
+## 686                 Summary Jan 17      1        0  0.000000e+00
+## 687             Summary July 23-24      1        0  0.000000e+00
+## 688             Summary June 18-19      1        0  0.000000e+00
+## 689               Summary June 5-6      1        0  0.000000e+00
+## 690                 Summary June 6      1        0  0.000000e+00
+## 691               Summary: Nov. 16      2        0  0.000000e+00
+## 692              Summary: Nov. 6-7      1        0  0.000000e+00
+## 693            Summary: Oct. 20-21      1        0  0.000000e+00
+## 694            Summary: October 31      1        0  0.000000e+00
+## 695            Summary of April 12      2        0  0.000000e+00
+## 696            Summary of April 13      1        0  0.000000e+00
+## 697            Summary of April 21      2        0  0.000000e+00
+## 698            Summary of April 27      1        0  0.000000e+00
+## 699           Summary of April 3rd      1        0  0.000000e+00
+## 700            Summary of August 1      1        0  0.000000e+00
+## 701             Summary of July 11      1        0  0.000000e+00
+## 702              Summary of July 2      1        0  0.000000e+00
+## 703             Summary of July 22      1        0  0.000000e+00
+## 704             Summary of July 26      1        0  0.000000e+00
+## 705             Summary of July 29      1        0  0.000000e+00
+## 706              Summary of July 3      1        0  0.000000e+00
+## 707             Summary of June 10      1        0  0.000000e+00
+## 708             Summary of June 11      1        0  0.000000e+00
+## 709             Summary of June 12      1        0  0.000000e+00
+## 710             Summary of June 13      2        0  0.000000e+00
+## 711             Summary of June 15      1        0  0.000000e+00
+## 712             Summary of June 16      1        0  0.000000e+00
+## 713             Summary of June 18      1        0  0.000000e+00
+## 714             Summary of June 23      1        0  0.000000e+00
+## 715             Summary of June 24      1        0  0.000000e+00
+## 716              Summary of June 3      2        0  0.000000e+00
+## 717             Summary of June 30      1        0  0.000000e+00
+## 718              Summary of June 4      1        0  0.000000e+00
+## 719              Summary of June 6      1        0  0.000000e+00
+## 720            Summary of March 14      1        0  0.000000e+00
+## 721            Summary of March 23      2        0  0.000000e+00
+## 722            Summary of March 24      1        0  0.000000e+00
+## 723         SUMMARY OF MARCH 24-25      1        0  0.000000e+00
+## 724            SUMMARY OF MARCH 27      1        0  0.000000e+00
+## 725            SUMMARY OF MARCH 29      1        0  0.000000e+00
+## 726              Summary of May 10      1        0  0.000000e+00
+## 727              Summary of May 13      1        0  0.000000e+00
+## 728              Summary of May 14      1        0  0.000000e+00
+## 729              Summary of May 22      1        0  0.000000e+00
+## 730           Summary of May 22 am      1        0  0.000000e+00
+## 731           Summary of May 22 pm      1        0  0.000000e+00
+## 732           Summary of May 26 am      1        0  0.000000e+00
+## 733           Summary of May 26 pm      1        0  0.000000e+00
+## 734           Summary of May 31 am      1        0  0.000000e+00
+## 735           Summary of May 31 pm      1        0  0.000000e+00
+## 736            Summary of May 9-10      1        0  0.000000e+00
+## 737              Summary: Sept. 18      1        0  0.000000e+00
+## 738            Summary Sept. 25-26      1        0  0.000000e+00
+## 739           Summary September 20      1        0  0.000000e+00
+## 740           Summary September 23      2        0  0.000000e+00
+## 741            Summary September 3      1        0  0.000000e+00
+## 742            Summary September 4      1        0  0.000000e+00
+## 743             Temperature record     43        0  0.000000e+00
+## 744              THUDERSTORM WINDS      2        0  0.000000e+00
+## 745            THUNDEERSTORM WINDS      2        0  0.000000e+00
+## 746            THUNDERESTORM WINDS      1        0  0.000000e+00
+## 747                    THUNDERSNOW      1        1  1.000000e+00
+## 748             Thundersnow shower      1        0  0.000000e+00
+## 749                   THUNDERSTORM     45       12  2.666667e-01
+## 750            THUNDERSTORM DAMAGE      2        0  0.000000e+00
+## 751         THUNDERSTORM DAMAGE TO      1        0  0.000000e+00
+## 752              THUNDERSTORM HAIL      1        0  0.000000e+00
+## 753                  THUNDERSTORMS      4        0  0.000000e+00
+## 754             THUNDERSTORMS WIND      6        0  0.000000e+00
+## 755            THUNDERSTORMS WINDS     14        1  7.142857e-02
+## 756                  THUNDERSTORMW      1       27  2.700000e+01
+## 757               THUNDERSTORMW 50      1        0  0.000000e+00
+## 758              Thunderstorm Wind      1        0  0.000000e+00
+## 759              THUNDERSTORM WIND  82563     1488  1.802260e-02
+## 760             THUNDERSTORM WIND.      1        0  0.000000e+00
+## 761           THUNDERSTORM WIND 50      2        0  0.000000e+00
+## 762           THUNDERSTORM WIND 52      1        0  0.000000e+00
+## 763           THUNDERSTORM WIND 56      1        0  0.000000e+00
+## 764           THUNDERSTORM WIND 59      1        0  0.000000e+00
+## 765       THUNDERSTORM WIND 59 MPH      1        0  0.000000e+00
+## 766      THUNDERSTORM WIND 59 MPH.      1        0  0.000000e+00
+## 767       THUNDERSTORM WIND 60 MPH      4        0  0.000000e+00
+## 768        THUNDERSTORM WIND 65MPH      1        0  0.000000e+00
+## 769       THUNDERSTORM WIND 65 MPH      1        0  0.000000e+00
+## 770           THUNDERSTORM WIND 69      1        0  0.000000e+00
+## 771       THUNDERSTORM WIND 98 MPH      1        0  0.000000e+00
+## 772       THUNDERSTORM WIND/AWNING      1        0  0.000000e+00
+## 773        THUNDERSTORM WIND (G40)      1        0  0.000000e+00
+## 774          THUNDERSTORM WIND G50      4        0  0.000000e+00
+## 775          THUNDERSTORM WIND G51      1        0  0.000000e+00
+## 776          THUNDERSTORM WIND G52      2        0  0.000000e+00
+## 777          THUNDERSTORM WIND G55      1        0  0.000000e+00
+## 778          THUNDERSTORM WIND G60      2        0  0.000000e+00
+## 779          THUNDERSTORM WIND G61      1        0  0.000000e+00
+## 780         THUNDERSTORM WIND/HAIL      1        0  0.000000e+00
+## 781    THUNDERSTORM WIND/LIGHTNING      1        0  0.000000e+00
+## 782              THUNDERSTORMWINDS      1        0  0.000000e+00
+## 783             THUNDERSTORM WINDS  20843      908  4.356379e-02
+## 784            THUNDERSTORM  WINDS      7       10  1.428571e+00
+## 785            THUNDERSTORM W INDS      1        0  0.000000e+00
+## 786            THUNDERSTORM WINDS.      3        0  0.000000e+00
+## 787          THUNDERSTORM WINDS 13      1        1  1.000000e+00
+## 788           THUNDERSTORM WINDS 2      1        0  0.000000e+00
+## 789          THUNDERSTORM WINDS 50      1        0  0.000000e+00
+## 790          THUNDERSTORM WINDS 52      1        0  0.000000e+00
+## 791           THUNDERSTORM WINDS53      1        0  0.000000e+00
+## 792          THUNDERSTORM WINDS 53      1        0  0.000000e+00
+## 793          THUNDERSTORM WINDS 60      1        0  0.000000e+00
+## 794          THUNDERSTORM WINDS 61      1        0  0.000000e+00
+## 795          THUNDERSTORM WINDS 62      1        0  0.000000e+00
+## 796      THUNDERSTORM WINDS 63 MPH      1        0  0.000000e+00
+## 797         THUNDERSTORM WINDS AND      2        0  0.000000e+00
+## 798 THUNDERSTORM WINDS/FLASH FLOOD      1        0  0.000000e+00
+## 799      THUNDERSTORM WINDS/ FLOOD      2        0  0.000000e+00
+## 800    THUNDERSTORM WINDS/FLOODING      1        0  0.000000e+00
+## 801 THUNDERSTORM WINDS FUNNEL CLOU      2        0  0.000000e+00
+## 802 THUNDERSTORM WINDS/FUNNEL CLOU      1        0  0.000000e+00
+## 803           THUNDERSTORM WINDS G      2        0  0.000000e+00
+## 804         THUNDERSTORM WINDS G60      1        0  0.000000e+00
+## 805         THUNDERSTORM WINDSHAIL      1        0  0.000000e+00
+## 806        THUNDERSTORM WINDS HAIL     61        0  0.000000e+00
+## 807        THUNDERSTORM WINDS/HAIL     24        1  4.166667e-02
+## 808       THUNDERSTORM WINDS/ HAIL      1        0  0.000000e+00
+## 809  THUNDERSTORM WINDS HEAVY RAIN      1        0  0.000000e+00
+## 810  THUNDERSTORM WINDS/HEAVY RAIN      1        0  0.000000e+00
+## 811 THUNDERSTORM WINDS      LE CEN      1        0  0.000000e+00
+## 812   THUNDERSTORM WINDS LIGHTNING      7        0  0.000000e+00
+## 813            THUNDERSTORM WINDSS     51        4  7.843137e-02
+## 814 THUNDERSTORM WINDS SMALL STREA      1        0  0.000000e+00
+## 815 THUNDERSTORM WINDS URBAN FLOOD      1        0  0.000000e+00
+## 816        THUNDERSTORM WIND/ TREE      1        0  0.000000e+00
+## 817        THUNDERSTORM WIND TREES      1        0  0.000000e+00
+## 818       THUNDERSTORM WIND/ TREES      4        0  0.000000e+00
+## 819              THUNDERSTORM WINS      1        0  0.000000e+00
+## 820            THUNDERSTORMW WINDS      3        0  0.000000e+00
+## 821              THUNDERSTROM WIND      1        0  0.000000e+00
+## 822             THUNDERSTROM WINDS      2        0  0.000000e+00
+## 823              THUNDERTORM WINDS      3        0  0.000000e+00
+## 824              THUNDERTSORM WIND      1        0  0.000000e+00
+## 825              THUNDESTORM WINDS      2        0  0.000000e+00
+## 826              THUNERSTORM WINDS      1        0  0.000000e+00
+## 827                    TIDAL FLOOD      1        0  0.000000e+00
+## 828                 Tidal Flooding      5        0  0.000000e+00
+## 829                 TIDAL FLOODING     20        1  5.000000e-02
+## 830                        TORNADO  60652    91346  1.506067e+00
+## 831                 TORNADO DEBRIS      1        0  0.000000e+00
+## 832                      TORNADOES      2        0  0.000000e+00
+## 833     TORNADOES, TSTM WIND, HAIL      1        0  0.000000e+00
+## 834                     TORNADO F0     19        0  0.000000e+00
+## 835                     TORNADO F1      4        0  0.000000e+00
+## 836                     TORNADO F2      3       16  5.333333e+00
+## 837                     TORNADO F3      2        2  1.000000e+00
+## 838                       TORNADOS      1        0  0.000000e+00
+## 839             TORNADO/WATERSPOUT      1        0  0.000000e+00
+## 840                        TORNDAO      1        0  0.000000e+00
+## 841                TORRENTIAL RAIN      1        0  0.000000e+00
+## 842            Torrential Rainfall      1        4  4.000000e+00
+## 843            TROPICAL DEPRESSION     60        0  0.000000e+00
+## 844                 TROPICAL STORM    690      340  4.927536e-01
+## 845         TROPICAL STORM ALBERTO      1        0  0.000000e+00
+## 846            TROPICAL STORM DEAN      2        0  0.000000e+00
+## 847          TROPICAL STORM GORDON      1       43  4.300000e+01
+## 848           TROPICAL STORM JERRY      3        0  0.000000e+00
+## 849                           TSTM      1        0  0.000000e+00
+## 850                TSTM HEAVY RAIN      3        0  0.000000e+00
+## 851                          TSTMW      1        0  0.000000e+00
+## 852                      Tstm Wind      2        0  0.000000e+00
+## 853                      TSTM WIND      4        0  0.000000e+00
+## 854                      TSTM WIND 219940     6957  3.163135e-02
+## 855                   TSTM WIND 40      1        0  0.000000e+00
+## 856                 TSTM WIND (41)      1        0  0.000000e+00
+## 857                   TSTM WIND 45      1        0  0.000000e+00
+## 858                   TSTM WIND 50      1        0  0.000000e+00
+## 859                   TSTM WIND 51      2        0  0.000000e+00
+## 860                   TSTM WIND 52      5        0  0.000000e+00
+## 861                   TSTM WIND 55      3        0  0.000000e+00
+## 862                  TSTM WIND 65)      1        0  0.000000e+00
+## 863        TSTM WIND AND LIGHTNING      1        0  0.000000e+00
+## 864               TSTM WIND DAMAGE      1        0  0.000000e+00
+## 865                TSTM WIND (G35)      1        0  0.000000e+00
+## 866                TSTM WIND (G40)     10        1  1.000000e-01
+## 867                TSTM WIND (G45)      1        0  0.000000e+00
+## 868                  TSTM WIND G45      1        0  0.000000e+00
+## 869               TSTM WIND  (G45)      1        0  0.000000e+00
+## 870                TSTM WIND (G45)     39        3  7.692308e-02
+## 871                  TSTM WIND G58      1        0  0.000000e+00
+## 872                 TSTM WIND/HAIL   1028       95  9.241245e-02
+## 873                     TSTM WINDS      6        0  0.000000e+00
+## 874                       TSTM WND      1        0  0.000000e+00
+## 875                        TSUNAMI     20      129  6.450000e+00
+## 876               TUNDERSTORM WIND      1        0  0.000000e+00
+## 877                        TYPHOON     11        5  4.545455e-01
+## 878              Unseasonable Cold      1        0  0.000000e+00
+## 879              UNSEASONABLY COLD     23        0  0.000000e+00
+## 880              UNSEASONABLY COOL     12        0  0.000000e+00
+## 881        UNSEASONABLY COOL &amp; WET      2        0  0.000000e+00
+## 882               UNSEASONABLY DRY     56        0  0.000000e+00
+## 883               UNSEASONABLY HOT     10        0  0.000000e+00
+## 884              UNSEASONABLY WARM    126       17  1.349206e-01
+## 885      UNSEASONABLY WARM AND DRY     13        0  0.000000e+00
+## 886        UNSEASONABLY WARM &amp; WET      1        0  0.000000e+00
+## 887          UNSEASONABLY WARM/WET      2        0  0.000000e+00
+## 888         UNSEASONABLY WARM YEAR      2        0  0.000000e+00
+## 889               UNSEASONABLY WET     19        0  0.000000e+00
+## 890            UNSEASONAL LOW TEMP      2        0  0.000000e+00
+## 891                UNSEASONAL RAIN      2        0  0.000000e+00
+## 892                 UNUSUALLY COLD      8        0  0.000000e+00
+## 893            UNUSUALLY LATE SNOW      1        0  0.000000e+00
+## 894                 UNUSUALLY WARM      4        0  0.000000e+00
+## 895          UNUSUAL/RECORD WARMTH      2        0  0.000000e+00
+## 896                 UNUSUAL WARMTH     10        0  0.000000e+00
+## 897                URBAN AND SMALL      2        0  0.000000e+00
+## 898         URBAN AND SMALL STREAM      3        0  0.000000e+00
+## 899   URBAN AND SMALL STREAM FLOOD      3        0  0.000000e+00
+## 900 URBAN AND SMALL STREAM FLOODIN      6        0  0.000000e+00
+## 901                    Urban flood      1        0  0.000000e+00
+## 902                    Urban Flood      1        0  0.000000e+00
+## 903                    URBAN FLOOD    249        0  0.000000e+00
+## 904                 Urban Flooding      1        0  0.000000e+00
+## 905                 URBAN FLOODING     98        0  0.000000e+00
+## 906          URBAN FLOOD LANDSLIDE      1        0  0.000000e+00
+## 907                   URBAN FLOODS      3        0  0.000000e+00
+## 908                    URBAN SMALL      1        0  0.000000e+00
+## 909                    URBAN/SMALL      2        0  0.000000e+00
+## 910           URBAN/SMALL FLOODING      1        0  0.000000e+00
+## 911             URBAN/SMALL STREAM      8        0  0.000000e+00
+## 912       URBAN SMALL STREAM FLOOD      2        0  0.000000e+00
+## 913       URBAN/SMALL STREAM FLOOD     30        0  0.000000e+00
+## 914      URBAN/SMALL STREAM  FLOOD      2        0  0.000000e+00
+## 915    URBAN/SMALL STREAM FLOODING      4        0  0.000000e+00
+## 916          URBAN/SMALL STRM FLDG      1        0  0.000000e+00
+## 917           URBAN/SML STREAM FLD   3392       79  2.329009e-02
+## 918          URBAN/SML STREAM FLDG      1        0  0.000000e+00
+## 919          URBAN/STREET FLOODING      3        0  0.000000e+00
+## 920                       VERY DRY      2        0  0.000000e+00
+## 921                      VERY WARM      1        0  0.000000e+00
+## 922                            VOG      1        0  0.000000e+00
+## 923                   Volcanic Ash      1        0  0.000000e+00
+## 924                   VOLCANIC ASH     22        0  0.000000e+00
+## 925               VOLCANIC ASHFALL      3        0  0.000000e+00
+## 926             Volcanic Ash Plume      1        0  0.000000e+00
+## 927              VOLCANIC ERUPTION      2        0  0.000000e+00
+## 928                  WAKE LOW WIND      2        0  0.000000e+00
+## 929                     WALL CLOUD      5        0  0.000000e+00
+## 930        WALL CLOUD/FUNNEL CLOUD      1        0  0.000000e+00
+## 931            WARM DRY CONDITIONS      1        0  0.000000e+00
+## 932                   WARM WEATHER      1        2  2.000000e+00
+## 933                     WATERSPOUT   3796       29  7.639621e-03
+## 934                     WATERSPOUT      1        0  0.000000e+00
+## 935                    WATER SPOUT      1        0  0.000000e+00
+## 936                    WATERSPOUT-     10        0  0.000000e+00
+## 937                    WATERSPOUT/      1        0  0.000000e+00
+## 938        WATERSPOUT FUNNEL CLOUD      1        0  0.000000e+00
+## 939                    WATERSPOUTS     37        0  0.000000e+00
+## 940             WATERSPOUT TORNADO      1        1  1.000000e+00
+## 941             WATERSPOUT-TORNADO      2        0  0.000000e+00
+## 942             WATERSPOUT/TORNADO      8       42  5.250000e+00
+## 943            WATERSPOUT/ TORNADO      2        0  0.000000e+00
+## 944                    WAYTERSPOUT      1        0  0.000000e+00
+## 945                  wet micoburst      1        0  0.000000e+00
+## 946                 WET MICROBURST      6        0  0.000000e+00
+## 947                      Wet Month      4        0  0.000000e+00
+## 948                       WET SNOW      1        0  0.000000e+00
+## 949                    WET WEATHER      1        0  0.000000e+00
+## 950                       Wet Year      4        0  0.000000e+00
+## 951                      Whirlwind      2        0  0.000000e+00
+## 952                      WHIRLWIND      1        0  0.000000e+00
+## 953                       WILDFIRE   2761      911  3.299529e-01
+## 954                      WILDFIRES      8        0  0.000000e+00
+## 955                     WILD FIRES      4      150  3.750000e+01
+## 956               WILD/FOREST FIRE   1457      545  3.740563e-01
+## 957              WILD/FOREST FIRES      1        0  0.000000e+00
+## 958                           Wind      6        0  0.000000e+00
+## 959                           WIND    340       86  2.529412e-01
+## 960                           WIND      1        0  0.000000e+00
+## 961                  WIND ADVISORY     12        0  0.000000e+00
+## 962                  WIND AND WAVE      1        0  0.000000e+00
+## 963                     WIND CHILL     18        0  0.000000e+00
+## 964           WIND CHILL/HIGH WIND      1        0  0.000000e+00
+## 965                    Wind Damage      4        0  0.000000e+00
+## 966                    WIND DAMAGE     27        0  0.000000e+00
+## 967                     WIND GUSTS      3        0  0.000000e+00
+## 968                      WIND/HAIL      1        0  0.000000e+00
+## 969                          WINDS     36        1  2.777778e-02
+## 970                     WIND STORM      1        0  0.000000e+00
+## 971                     WINTER MIX      3        0  0.000000e+00
+## 972                   WINTER STORM  11433     1321  1.155427e-01
+## 973         WINTER STORM/HIGH WIND      1        0  0.000000e+00
+## 974        WINTER STORM HIGH WINDS      1       15  1.500000e+01
+## 975        WINTER STORM/HIGH WINDS      1        0  0.000000e+00
+## 976                  WINTER STORMS      3       17  5.666667e+00
+## 977                 Winter Weather     19        0  0.000000e+00
+## 978                 WINTER WEATHER   7026      398  5.664674e-02
+## 979             WINTER WEATHER MIX      6       68  1.133333e+01
+## 980             WINTER WEATHER/MIX   1104       72  6.521739e-02
+## 981                    WINTERY MIX      2        0  0.000000e+00
+## 982                     Wintry mix      3        0  0.000000e+00
+## 983                     Wintry Mix      1        0  0.000000e+00
+## 984                     WINTRY MIX     90       77  8.555556e-01
+## 985                            WND      1        0  0.000000e+00</code></pre>
 </div>
 <div id="results" class="section level2">
 <h2>Results</h2>

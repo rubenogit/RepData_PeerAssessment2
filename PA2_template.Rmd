@@ -41,7 +41,28 @@ rm(address, zipname)
 ##Explore the data
 
 ```{r}
-head(stormdata)
+
+#aggregate over health effects i.e. injuries
+#fatalities do no have an effect on population health
+#use !is.na or na.rm to exclude NA's
+health_injuries_count <- aggregate(INJURIES ~ EVTYPE, data=stormdata, function(x) length( !is.na(x)))
+health_injuries_sum <- aggregate(INJURIES ~ EVTYPE, data=stormdata, function(x) sum(x, na.rm = TRUE))
+health_injuries_mean <- aggregate(INJURIES ~ EVTYPE, data=stormdata, function(x) mean(x, na.rm = TRUE))
+
+names(health_injuries_count)[2] <- "number"
+names(health_injuries_sum)[2] <- "injuries"
+names(health_injuries_mean)[2] <- "mean_injuries"
+
+#combine in one dataframe
+health <- data.frame(health_injuries_count,
+                     health_injuries_sum[2],
+                     health_injuries_mean[2]
+                     )
+
+#house keeping
+rm(health_injuries_count, health_injuries_sum, health_injuries_mean)
+
+health
 ```
 
 
