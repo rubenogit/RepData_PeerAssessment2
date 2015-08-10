@@ -22,9 +22,26 @@ In this analysis I explore the effects of severe weather events in the US on hea
 ##Data Processing
 
 ```{r cache = TRUE}
-#Download the dataset
+#Download and unzip the data file
 #https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2
+address <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2"
+address <- sub("^https", "http", address) #https does not work
+zipname <- "StormData.csv.bz2"
+download.file(address,zipname)
 
+#No need to unzip, R can is smart enough to read a zipped csv
+stormdata <- read.csv(zipname)
+
+#housekeeping - remove the zip as it is no longer needed
+file.remove(zipname)
+#housekeeping
+rm(address, zipname)
+```
+
+##Explore the data
+
+```{r}
+head(stormdata)
 ```
 
 
