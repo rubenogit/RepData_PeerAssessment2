@@ -62,7 +62,7 @@ health <- data.frame(health_injuries_count,
 #house keeping
 rm(health_injuries_count, health_injuries_sum, health_injuries_mean)
 
-health
+
 ```
 
 
