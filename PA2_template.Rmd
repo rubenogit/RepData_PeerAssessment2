@@ -1,6 +1,6 @@
 ---
 title: "Effects of severe weather events in US on health and economy"
-output: html_document
+output: pdf_document
 ---
 
 <!---
