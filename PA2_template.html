@@ -82,6 +82,7 @@ img {
 </div>
 <div id="data-processing" class="section level2">
 <h2>Data Processing</h2>
+<p>First I load the <a href="https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2">StormData</a>.</p>
 <pre class="r"><code>#Download and unzip the data file
 #https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2
 address &lt;- &quot;https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2&quot;
@@ -97,43 +98,135 @@ file.remove(zipname)</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>#housekeeping
 rm(address, zipname)</code></pre>
+<p>Some more data preparation. I add a column called HEALTH that contains the number of people affected. I include both the fatalities and the injuries, i.e. the fataly and non-fataly injured. Secondly I add a column for the damages in dollars. For this I need to combine the columns with numbers and columns with alphabetical indictation, for the severity, “K” for thousands of dollars, “M” for millions, “B” for billions. Thirdly, I add a column for year. The first years a scarcely filled with data and inculde only data for a small number of event types. From the nineties onwards, there is a more complete set.</p>
+<pre class="r"><code>#Add a health column
+#This includes all those that are affected, i.e. killed or injured
+stormdata$HEALTH &lt;- stormdata$FATALITIES + stormdata$INJURIES
+
+#Add a column that adds up the prop and crop damage
+#Start with all zeros and then add propdmg and cropdmg multiplied by
+#the correct number depending on &quot;K&quot;, &quot;M&quot; or &quot;B&quot;
+K &lt;- 1000
+M &lt;- 1000000
+B &lt;- 1000000000
+
+#Set damage to all zeros
+stormdata$DAMAGE &lt;- 0
+
+#Add PROPDMG thousands, millions and billions
+stormdata$DAMAGE[toupper(stormdata$PROPDMGEXP)==&quot;K&quot;] &lt;-
+  stormdata$DAMAGE[toupper(stormdata$PROPDMGEXP)==&quot;K&quot;] +
+  stormdata$PROPDMG[toupper(stormdata$PROPDMGEXP)==&quot;K&quot;] * K
+stormdata$DAMAGE[toupper(stormdata$PROPDMGEXP)==&quot;M&quot;] &lt;-
+  stormdata$DAMAGE[toupper(stormdata$PROPDMGEXP)==&quot;M&quot;] +
+  stormdata$PROPDMG[toupper(stormdata$PROPDMGEXP)==&quot;M&quot;] * M
+stormdata$DAMAGE[toupper(stormdata$PROPDMGEXP)==&quot;B&quot;] &lt;-
+  stormdata$DAMAGE[toupper(stormdata$PROPDMGEXP)==&quot;B&quot;] +
+  stormdata$PROPDMG[toupper(stormdata$PROPDMGEXP)==&quot;B&quot;] * B
+
+#Add CROPDMG thousands, millions and billions
+stormdata$DAMAGE[toupper(stormdata$CROPDMGEXP)==&quot;K&quot;] &lt;-
+  stormdata$DAMAGE[toupper(stormdata$CROPDMGEXP)==&quot;K&quot;] +
+  stormdata$CROPDMG[toupper(stormdata$CROPDMGEXP)==&quot;K&quot;] * K
+stormdata$DAMAGE[toupper(stormdata$CROPDMGEXP)==&quot;M&quot;] &lt;-
+  stormdata$DAMAGE[toupper(stormdata$CROPDMGEXP)==&quot;M&quot;] +
+  stormdata$CROPDMG[toupper(stormdata$CROPDMGEXP)==&quot;M&quot;] * M
+stormdata$DAMAGE[toupper(stormdata$CROPDMGEXP)==&quot;B&quot;] &lt;-
+  stormdata$DAMAGE[toupper(stormdata$CROPDMGEXP)==&quot;B&quot;] +
+  stormdata$CROPDMG[toupper(stormdata$CROPDMGEXP)==&quot;B&quot;] * B
+
+#house keeping
+rm(K, M , B)
+
+#Use library lubridate
+#Only the data for more recent years is relevant
+library(lubridate)
+
+#Add a YEAR colum to the data
+stormdata$YEAR &lt;- year(mdy_hms(stormdata$BGN_DATE))
+#Take into account only the years for which we have more complete data
+#I set the year to be larger or equal to 1994
+complete_year &lt;- 1994
+stormdata &lt;- stormdata[which(stormdata$YEAR &gt;= complete_year),]
+
+#house keeping
+rm(complete_year)</code></pre>
 </div>
-<div id="explore-the-data" class="section level2">
-<h2>Explore the data</h2>
+<div id="explore-the-health-data" class="section level2">
+<h2>Explore the health data</h2>
 <pre class="r"><code>#aggregate over health effects i.e. injuries
 #fatalities do no have an effect on population health
 #use !is.na or na.rm to exclude NA's
-health_injuries_count &lt;- aggregate(INJURIES ~ EVTYPE, data=stormdata, function(x) length( !is.na(x)))
-health_injuries_sum &lt;- aggregate(INJURIES ~ EVTYPE, data=stormdata, function(x) sum(x, na.rm = TRUE))
-health_injuries_mean &lt;- aggregate(INJURIES ~ EVTYPE, data=stormdata, function(x) mean(x, na.rm = TRUE))
+health_count &lt;- aggregate(HEALTH ~ EVTYPE, data=stormdata, function(x) length( !is.na(x)))
+health_sum &lt;- aggregate(HEALTH ~ EVTYPE, data=stormdata, function(x) sum(x, na.rm = TRUE))
+health_mean &lt;- aggregate(HEALTH ~ EVTYPE, data=stormdata, function(x) mean(x, na.rm = TRUE))
 
-names(health_injuries_count)[2] &lt;- &quot;number&quot;
-names(health_injuries_sum)[2] &lt;- &quot;injuries&quot;
-names(health_injuries_mean)[2] &lt;- &quot;mean_injuries&quot;
+names(health_count)[2] &lt;- &quot;number_events&quot;
+names(health_sum)[2] &lt;- &quot;number_affected&quot;
+names(health_mean)[2] &lt;- &quot;mean_number_affected&quot;
 
 #combine in one dataframe
-health &lt;- data.frame(health_injuries_count,
-                     health_injuries_sum[2],
-                     health_injuries_mean[2]
+health &lt;- data.frame(health_count,
+                     health_sum[2],
+                     health_mean[2]
                      )
 
 #house keeping
-rm(health_injuries_count, health_injuries_sum, health_injuries_mean)
+rm(health_count, health_sum, health_mean)
 
-health_top10 &lt;- health[order(health$injuries, decreasing = TRUE),][1:10,]
+#calculate top10
+health_top10 &lt;- health[order(health$number_affected, decreasing = TRUE),][1:10,]
 
 health_top10</code></pre>
-<pre><code>##                EVTYPE number injuries mean_injuries
-## 830           TORNADO  60652    91346   1.506067401
-## 854         TSTM WIND 219940     6957   0.031631354
-## 164             FLOOD  25326     6789   0.268064440
-## 123    EXCESSIVE HEAT   1678     6525   3.888557807
-## 452         LIGHTNING  15754     5230   0.331979180
-## 269              HEAT    767     2100   2.737940026
-## 424         ICE STORM   2006     1975   0.984546361
-## 147       FLASH FLOOD  54277     1777   0.032739466
-## 759 THUNDERSTORM WIND  82563     1488   0.018022601
-## 238              HAIL 288661     1361   0.004714873</code></pre>
+<pre><code>##                EVTYPE number_events number_affected mean_number_affected
+## 781           TORNADO         25274           24164           0.95608135
+## 115    EXCESSIVE HEAT          1678            8428           5.02264601
+## 154             FLOOD         24906            7228           0.29021119
+## 425         LIGHTNING         15287            5910           0.38660300
+## 804         TSTM WIND        128970            3872           0.03002249
+## 254              HEAT           759            3025           3.98550725
+## 139       FLASH FLOOD         53396            2705           0.05065923
+## 398         ICE STORM          1972            2057           1.04310345
+## 712 THUNDERSTORM WIND         82482            1609           0.01950729
+## 918      WINTER STORM         11403            1493           0.13093046</code></pre>
+</div>
+<div id="explore-the-economic-damage-data" class="section level2">
+<h2>Explore the economic damage data</h2>
+<pre class="r"><code>#aggregate over economic damage
+#fatalities do no have an effect on population health
+#use !is.na or na.rm to exclude NA's
+damage_count &lt;- aggregate(DAMAGE ~ EVTYPE, data=stormdata, function(x) length( !is.na(x)))
+damage_sum &lt;- aggregate(DAMAGE ~ EVTYPE, data=stormdata, function(x) sum(x, na.rm = TRUE))
+damage_mean &lt;- aggregate(DAMAGE ~ EVTYPE, data=stormdata, function(x) mean(x, na.rm = TRUE))
+
+names(damage_count)[2] &lt;- &quot;number&quot;
+names(damage_sum)[2] &lt;- &quot;damage&quot;
+names(damage_mean)[2] &lt;- &quot;mean_damage&quot;
+
+#combine in one dataframe
+damage &lt;- data.frame(damage_count,
+                     damage_sum[2],
+                     damage_mean[2]
+                     )
+
+#house keeping
+rm(damage_count,damage_sum, damage_mean)
+
+#calculate top10
+damage_top10 &lt;- damage[order(damage$damage, decreasing = TRUE),][1:10,]
+
+damage_top10</code></pre>
+<pre><code>##                EVTYPE number       damage  mean_damage
+## 154             FLOOD  24906 149686551250   6010059.88
+## 381 HURRICANE/TYPHOON     88  71913712800 817201281.82
+## 620       STORM SURGE    253  43193541000 170725458.50
+## 781           TORNADO  25274  25982192520   1028020.60
+## 224              HAIL 222616  18317742770     82284.04
+## 139       FLASH FLOOD  53396  17119054960    320605.57
+## 83            DROUGHT   2478  14968172000   6040424.54
+## 373         HURRICANE    171  14604229010  85404848.01
+## 398         ICE STORM   1972   8854491310   4490107.16
+## 794    TROPICAL STORM    686   8381226550  12217531.41</code></pre>
 </div>
 <div id="results" class="section level2">
 <h2>Results</h2>

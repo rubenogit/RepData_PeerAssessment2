@@ -21,6 +21,7 @@ In this analysis I explore the effects of severe weather events in the US on hea
 
 ##Data Processing
 
+First I load the [StormData](https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2).
 ```{r cache = TRUE}
 #Download and unzip the data file
 #https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2
@@ -38,39 +39,127 @@ file.remove(zipname)
 rm(address, zipname)
 ```
 
-##Explore the data
+Some more data preparation. I add a column called HEALTH that contains the number of people affected. I include both the fatalities and the injuries, i.e. the fataly and non-fataly injured. Secondly I add a column for the damages in dollars. For this I need to combine the columns with numbers and columns with alphabetical indictation, for the severity, "K" for thousands of dollars, "M" for millions, "B" for billions. Thirdly, I add a column for year. The first years a scarcely filled with data and inculde only data for a small number of event types. From the nineties onwards, there is a more complete set.
+```{r}
+#Add a health column
+#This includes all those that are affected, i.e. killed or injured
+stormdata$HEALTH <- stormdata$FATALITIES + stormdata$INJURIES
+
+#Add a column that adds up the prop and crop damage
+#Start with all zeros and then add propdmg and cropdmg multiplied by
+#the correct number depending on "K", "M" or "B"
+K <- 1000
+M <- 1000000
+B <- 1000000000
+
+#Set damage to all zeros
+stormdata$DAMAGE <- 0
+
+#Add PROPDMG thousands, millions and billions
+stormdata$DAMAGE[toupper(stormdata$PROPDMGEXP)=="K"] <-
+  stormdata$DAMAGE[toupper(stormdata$PROPDMGEXP)=="K"] +
+  stormdata$PROPDMG[toupper(stormdata$PROPDMGEXP)=="K"] * K
+stormdata$DAMAGE[toupper(stormdata$PROPDMGEXP)=="M"] <-
+  stormdata$DAMAGE[toupper(stormdata$PROPDMGEXP)=="M"] +
+  stormdata$PROPDMG[toupper(stormdata$PROPDMGEXP)=="M"] * M
+stormdata$DAMAGE[toupper(stormdata$PROPDMGEXP)=="B"] <-
+  stormdata$DAMAGE[toupper(stormdata$PROPDMGEXP)=="B"] +
+  stormdata$PROPDMG[toupper(stormdata$PROPDMGEXP)=="B"] * B
+
+#Add CROPDMG thousands, millions and billions
+stormdata$DAMAGE[toupper(stormdata$CROPDMGEXP)=="K"] <-
+  stormdata$DAMAGE[toupper(stormdata$CROPDMGEXP)=="K"] +
+  stormdata$CROPDMG[toupper(stormdata$CROPDMGEXP)=="K"] * K
+stormdata$DAMAGE[toupper(stormdata$CROPDMGEXP)=="M"] <-
+  stormdata$DAMAGE[toupper(stormdata$CROPDMGEXP)=="M"] +
+  stormdata$CROPDMG[toupper(stormdata$CROPDMGEXP)=="M"] * M
+stormdata$DAMAGE[toupper(stormdata$CROPDMGEXP)=="B"] <-
+  stormdata$DAMAGE[toupper(stormdata$CROPDMGEXP)=="B"] +
+  stormdata$CROPDMG[toupper(stormdata$CROPDMGEXP)=="B"] * B
+
+#house keeping
+rm(K, M , B)
+
+#Use library lubridate
+#Only the data for more recent years is relevant
+library(lubridate)
+
+#Add a YEAR colum to the data
+stormdata$YEAR <- year(mdy_hms(stormdata$BGN_DATE))
+#Take into account only the years for which we have more complete data
+#I set the year to be larger or equal to 1994
+complete_year <- 1994
+stormdata <- stormdata[which(stormdata$YEAR >= complete_year),]
+
+#house keeping
+rm(complete_year)
+
+```
+
+
+##Explore the health data
 
 ```{r}
 
 #aggregate over health effects i.e. injuries
 #fatalities do no have an effect on population health
 #use !is.na or na.rm to exclude NA's
-health_injuries_count <- aggregate(INJURIES ~ EVTYPE, data=stormdata, function(x) length( !is.na(x)))
-health_injuries_sum <- aggregate(INJURIES ~ EVTYPE, data=stormdata, function(x) sum(x, na.rm = TRUE))
-health_injuries_mean <- aggregate(INJURIES ~ EVTYPE, data=stormdata, function(x) mean(x, na.rm = TRUE))
+health_count <- aggregate(HEALTH ~ EVTYPE, data=stormdata, function(x) length( !is.na(x)))
+health_sum <- aggregate(HEALTH ~ EVTYPE, data=stormdata, function(x) sum(x, na.rm = TRUE))
+health_mean <- aggregate(HEALTH ~ EVTYPE, data=stormdata, function(x) mean(x, na.rm = TRUE))
 
-names(health_injuries_count)[2] <- "number"
-names(health_injuries_sum)[2] <- "injuries"
-names(health_injuries_mean)[2] <- "mean_injuries"
+names(health_count)[2] <- "number_events"
+names(health_sum)[2] <- "number_affected"
+names(health_mean)[2] <- "mean_number_affected"
 
 #combine in one dataframe
-health <- data.frame(health_injuries_count,
-                     health_injuries_sum[2],
-                     health_injuries_mean[2]
+health <- data.frame(health_count,
+                     health_sum[2],
+                     health_mean[2]
                      )
 
 #house keeping
-rm(health_injuries_count, health_injuries_sum, health_injuries_mean)
+rm(health_count, health_sum, health_mean)
 
-health_top10 <- health[order(health$injuries, decreasing = TRUE),][1:10,]
+#calculate top10
+health_top10 <- health[order(health$number_affected, decreasing = TRUE),][1:10,]
 
 health_top10
 ```
 
+##Explore the economic damage data
+
+```{r}
 
 
 
 
+#aggregate over economic damage
+#fatalities do no have an effect on population health
+#use !is.na or na.rm to exclude NA's
+damage_count <- aggregate(DAMAGE ~ EVTYPE, data=stormdata, function(x) length( !is.na(x)))
+damage_sum <- aggregate(DAMAGE ~ EVTYPE, data=stormdata, function(x) sum(x, na.rm = TRUE))
+damage_mean <- aggregate(DAMAGE ~ EVTYPE, data=stormdata, function(x) mean(x, na.rm = TRUE))
+
+names(damage_count)[2] <- "number"
+names(damage_sum)[2] <- "damage"
+names(damage_mean)[2] <- "mean_damage"
+
+#combine in one dataframe
+damage <- data.frame(damage_count,
+                     damage_sum[2],
+                     damage_mean[2]
+                     )
+
+#house keeping
+rm(damage_count,damage_sum, damage_mean)
+
+#calculate top10
+damage_top10 <- damage[order(damage$damage, decreasing = TRUE),][1:10,]
+
+damage_top10
+
+```
 
 ##Results
 <!---
