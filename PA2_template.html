@@ -159,6 +159,342 @@ stormdata &lt;- stormdata[which(stormdata$HEALTH &gt; 0 |
 #unique(stormdata$EVTYPE)
 #house keeping
 rm(complete_year)</code></pre>
+<pre class="r"><code>#evtypes_orig &lt;- unique(tolower(trimws(as.character(stormdata$EVTYPE))))
+
+e &lt;- tolower(trimws(as.character(stormdata$EVTYPE)))
+
+e[which(e==&quot;agricultural freeze&quot;)] &lt;- &quot;Frost/Freeze (Z)&quot;
+e[which(e==&quot;astronomical high tide&quot;)] &lt;- &quot;Storm Tide (Z)&quot;
+e[which(e==&quot;astronomical low tide&quot;)] &lt;- &quot;Astronomical Low Tide (Z)&quot;
+e[which(e==&quot;avalanche&quot;)] &lt;- &quot;Avalanche (Z)&quot;
+e[which(e==&quot;beach erosion&quot;)] &lt;- &quot;Coastal Flood (Z)&quot;
+e[which(e==&quot;black ice&quot;)] &lt;- &quot;Sleet (Z)&quot;
+e[which(e==&quot;blizzard&quot;)] &lt;- &quot;Blizzard (Z)&quot;
+e[which(e==&quot;blowing dust&quot;)] &lt;- &quot;Dust Storm (Z)&quot;
+e[which(e==&quot;blowing snow&quot;)] &lt;- &quot;Winter Storm (Z)&quot;
+e[which(e==&quot;brush fire&quot;)] &lt;- &quot;Wildfire (Z)&quot;
+e[which(e==&quot;coastal erosion&quot;)] &lt;- &quot;Coastal Flood (Z)&quot;
+e[which(e==&quot;coastal flood&quot;)] &lt;- &quot;Coastal Flood (Z)&quot;
+e[which(e==&quot;coastal flooding&quot;)] &lt;- &quot;Coastal Flood (Z)&quot;
+e[which(e==&quot;coastal  flooding/erosion&quot;)] &lt;- &quot;Coastal Flood (Z)&quot;
+e[which(e==&quot;coastal flooding/erosion&quot;)] &lt;- &quot;Coastal Flood (Z)&quot;
+e[which(e==&quot;coastalstorm&quot;)] &lt;- &quot;Marine Strong Wind (M)&quot;
+e[which(e==&quot;coastal storm&quot;)] &lt;- &quot;Marine Strong Wind (M)&quot;
+e[which(e==&quot;cold&quot;)] &lt;- &quot;Cold/Wind Chill (Z)&quot;
+e[which(e==&quot;cold and snow&quot;)] &lt;- &quot;Cold/Wind Chill (Z)&quot;
+e[which(e==&quot;cold and wet conditions&quot;)] &lt;- &quot;Cold/Wind Chill (Z)&quot;
+e[which(e==&quot;cold temperature&quot;)] &lt;- &quot;Cold/Wind Chill (Z)&quot;
+e[which(e==&quot;cold wave&quot;)] &lt;- &quot;Cold/Wind Chill (Z)&quot;
+e[which(e==&quot;cold weather&quot;)] &lt;- &quot;Cold/Wind Chill (Z)&quot;
+e[which(e==&quot;cold/wind chill&quot;)] &lt;- &quot;Cold/Wind Chill (Z)&quot;
+e[which(e==&quot;damaging freeze&quot;)] &lt;- &quot;Frost/Freeze (Z)&quot;
+e[which(e==&quot;dam break&quot;)] &lt;- &quot;Flash Flood (C)&quot;
+e[which(e==&quot;dense fog&quot;)] &lt;- &quot;Dense Fog (Z)&quot;
+e[which(e==&quot;dense smoke&quot;)] &lt;- &quot;Dense Smoke (Z)&quot;
+e[which(e==&quot;downburst&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;drought&quot;)] &lt;- &quot;Drought (Z)&quot;
+e[which(e==&quot;drought/excessive heat&quot;)] &lt;- &quot;Drought (Z)&quot;
+e[which(e==&quot;drowning&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;dry microburst&quot;)] &lt;- &quot;Strong Wind (Z)&quot;
+e[which(e==&quot;dust devil&quot;)] &lt;- &quot;Dust Devil (C)&quot;
+e[which(e==&quot;dust devil waterspout&quot;)] &lt;- &quot;Dust Devil (C)&quot;
+e[which(e==&quot;dust storm&quot;)] &lt;- &quot;Dust Storm (Z)&quot;
+e[which(e==&quot;early frost&quot;)] &lt;- &quot;Frost/Freeze (Z)&quot;
+e[which(e==&quot;erosion/cstl flood&quot;)] &lt;- &quot;Coastal Flood (Z)&quot;
+e[which(e==&quot;excessive heat&quot;)] &lt;- &quot;Excessive Heat (Z)&quot;
+e[which(e==&quot;excessive rainfall&quot;)] &lt;- &quot;Heavy Rain (C)&quot;
+e[which(e==&quot;excessive snow&quot;)] &lt;- &quot;Heavy Snow (Z)&quot;
+e[which(e==&quot;excessive wetness&quot;)] &lt;- &quot;Heavy Rain (C)&quot;
+e[which(e==&quot;extended cold&quot;)] &lt;- &quot;Cold/Wind Chill (Z)&quot;
+e[which(e==&quot;extreme cold&quot;)] &lt;- &quot;Extreme Cold/Wind Chill (Z)&quot;
+e[which(e==&quot;extreme cold/wind chill&quot;)] &lt;- &quot;Extreme Cold/Wind Chill (Z)&quot;
+e[which(e==&quot;extreme heat&quot;)] &lt;- &quot;Extreme Cold/Wind Chill (Z)&quot;
+e[which(e==&quot;extreme windchill&quot;)] &lt;- &quot;Extreme Cold/Wind Chill (Z)&quot;
+e[which(e==&quot;extreme wind chill&quot;)] &lt;- &quot;Extreme Cold/Wind Chill (Z)&quot;
+e[which(e==&quot;falling snow/ice&quot;)] &lt;- &quot;Heavy Snow (Z)&quot;
+e[which(e==&quot;flash flood&quot;)] &lt;- &quot;Flash Flood (C)&quot;
+e[which(e==&quot;flash flood/flood&quot;)] &lt;- &quot;Flash Flood (C)&quot;
+e[which(e==&quot;flash flood - heavy rain&quot;)] &lt;- &quot;Flash Flood (C)&quot;
+e[which(e==&quot;flash flooding&quot;)] &lt;- &quot;Flash Flood (C)&quot;
+e[which(e==&quot;flash floods&quot;)] &lt;- &quot;Flash Flood (C)&quot;
+e[which(e==&quot;flash flood/ street&quot;)] &lt;- &quot;Flash Flood (C)&quot;
+e[which(e==&quot;flood&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;flood/flash&quot;)] &lt;- &quot;Flash Flood (C)&quot;
+e[which(e==&quot;flood/flash flood&quot;)] &lt;- &quot;Flash Flood (C)&quot;
+e[which(e==&quot;flood/flash/flood&quot;)] &lt;- &quot;Flash Flood (C)&quot;
+e[which(e==&quot;flood &amp; heavy rain&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;flooding&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;flood/rain/winds&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;floods&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;fog&quot;)] &lt;- &quot;Dense Fog (Z)&quot;
+e[which(e==&quot;freeze&quot;)] &lt;- &quot;Frost/Freeze (Z)&quot;
+e[which(e==&quot;freezing drizzle&quot;)] &lt;- &quot;Sleet (Z)&quot;
+e[which(e==&quot;freezing fog&quot;)] &lt;- &quot;Freezing Fog (Z)&quot;
+e[which(e==&quot;freezing rain&quot;)] &lt;- &quot;Sleet (Z)&quot;
+e[which(e==&quot;freezing rain/snow&quot;)] &lt;- &quot;Sleet (Z)&quot;
+e[which(e==&quot;freezing spray&quot;)] &lt;- &quot;Sleet (Z)&quot;
+e[which(e==&quot;frost&quot;)] &lt;- &quot;Frost/Freeze (Z)&quot;
+e[which(e==&quot;frost/freeze&quot;)] &lt;- &quot;Frost/Freeze (Z)&quot;
+e[which(e==&quot;funnel cloud&quot;)] &lt;- &quot;Funnel Cloud (C)&quot;
+e[which(e==&quot;glaze&quot;)] &lt;- &quot;Sleet (Z)&quot;
+e[which(e==&quot;glaze ice&quot;)] &lt;- &quot;Sleet (Z)&quot;
+e[which(e==&quot;gradient wind&quot;)] &lt;- &quot;Strong Wind (Z)&quot;
+e[which(e==&quot;grass fires&quot;)] &lt;- &quot;Wildfire (Z)&quot;
+e[which(e==&quot;gustnado&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;gusty wind&quot;)] &lt;- &quot;Strong Wind (Z)&quot;
+e[which(e==&quot;gusty wind/hail&quot;)] &lt;- &quot;Hail (C)&quot;
+e[which(e==&quot;gusty wind/hvy rain&quot;)] &lt;- &quot;Heavy Rain (C)&quot;
+e[which(e==&quot;gusty wind/rain&quot;)] &lt;- &quot;Heavy Rain (C)&quot;
+e[which(e==&quot;gusty winds&quot;)] &lt;- &quot;Strong Wind (Z)&quot;
+e[which(e==&quot;hail&quot;)] &lt;- &quot;Hail (C)&quot;
+e[which(e==&quot;hail 075&quot;)] &lt;- &quot;Hail (C)&quot;
+e[which(e==&quot;hail 0.75&quot;)] &lt;- &quot;Hail (C)&quot;
+e[which(e==&quot;hail 100&quot;)] &lt;- &quot;Hail (C)&quot;
+e[which(e==&quot;hail 125&quot;)] &lt;- &quot;Hail (C)&quot;
+e[which(e==&quot;hail 150&quot;)] &lt;- &quot;Hail (C)&quot;
+e[which(e==&quot;hail 175&quot;)] &lt;- &quot;Hail (C)&quot;
+e[which(e==&quot;hail 200&quot;)] &lt;- &quot;Hail (C)&quot;
+e[which(e==&quot;hail 275&quot;)] &lt;- &quot;Hail (C)&quot;
+e[which(e==&quot;hail 450&quot;)] &lt;- &quot;Hail (C)&quot;
+e[which(e==&quot;hail 75&quot;)] &lt;- &quot;Hail (C)&quot;
+e[which(e==&quot;hail damage&quot;)] &lt;- &quot;Hail (C)&quot;
+e[which(e==&quot;hailstorm&quot;)] &lt;- &quot;Hail (C)&quot;
+e[which(e==&quot;hard freeze&quot;)] &lt;- &quot;Cold/Wind Chill (Z)&quot;
+e[which(e==&quot;hazardous surf&quot;)] &lt;- &quot;High Surf (Z)&quot;
+e[which(e==&quot;heat&quot;)] &lt;- &quot;Heat (Z)&quot;
+e[which(e==&quot;heat wave&quot;)] &lt;- &quot;Heat (Z)&quot;
+e[which(e==&quot;heat wave drought&quot;)] &lt;- &quot;Heat (Z)&quot;
+e[which(e==&quot;heavy mix&quot;)] &lt;- &quot;Heavy Rain (C)&quot;
+e[which(e==&quot;heavy rain&quot;)] &lt;- &quot;Heavy Rain (C)&quot;
+e[which(e==&quot;heavy rain and flood&quot;)] &lt;- &quot;Heavy Rain (C)&quot;
+e[which(e==&quot;heavy rain/high surf&quot;)] &lt;- &quot;Heavy Rain (C)&quot;
+e[which(e==&quot;heavy rains&quot;)] &lt;- &quot;Heavy Rain (C)&quot;
+e[which(e==&quot;heavy rain/severe weather&quot;)] &lt;- &quot;Heavy Rain (C)&quot;
+e[which(e==&quot;heavy seas&quot;)] &lt;- &quot;High Surf (Z)&quot;
+e[which(e==&quot;heavy snow&quot;)] &lt;- &quot;Heavy Snow (Z)&quot;
+e[which(e==&quot;heavy snow and high winds&quot;)] &lt;- &quot;Heavy Snow (Z)&quot;
+e[which(e==&quot;heavy snow and strong winds&quot;)] &lt;- &quot;Heavy Snow (Z)&quot;
+e[which(e==&quot;heavy snow/high winds &amp; flood&quot;)] &lt;- &quot;Heavy Snow (Z)&quot;
+e[which(e==&quot;heavy snow/ice&quot;)] &lt;- &quot;Heavy Snow (Z)&quot;
+e[which(e==&quot;heavy snow shower&quot;)] &lt;- &quot;Heavy Snow (Z)&quot;
+e[which(e==&quot;heavy snow squalls&quot;)] &lt;- &quot;Heavy Snow (Z)&quot;
+e[which(e==&quot;heavy snow-squalls&quot;)] &lt;- &quot;Heavy Snow (Z)&quot;
+e[which(e==&quot;heavy surf&quot;)] &lt;- &quot;High Surf (Z)&quot;
+e[which(e==&quot;heavy surf and wind&quot;)] &lt;- &quot;High Surf (Z)&quot;
+e[which(e==&quot;heavy surf coastal flooding&quot;)] &lt;- &quot;High Surf (Z)&quot;
+e[which(e==&quot;heavy surf/high surf&quot;)] &lt;- &quot;High Surf (Z)&quot;
+e[which(e==&quot;heavy swells&quot;)] &lt;- &quot;High Surf (Z)&quot;
+e[which(e==&quot;high seas&quot;)] &lt;- &quot;High Surf (Z)&quot;
+e[which(e==&quot;high surf&quot;)] &lt;- &quot;High Surf (Z)&quot;
+e[which(e==&quot;high surf advisory&quot;)] &lt;- &quot;High Surf (Z)&quot;
+e[which(e==&quot;high swells&quot;)] &lt;- &quot;High Surf (Z)&quot;
+e[which(e==&quot;high water&quot;)] &lt;- &quot;High Surf (Z)&quot;
+e[which(e==&quot;high waves&quot;)] &lt;- &quot;High Surf (Z)&quot;
+e[which(e==&quot;high wind&quot;)] &lt;- &quot;High Wind (Z)&quot;
+e[which(e==&quot;high wind damage&quot;)] &lt;- &quot;High Wind (Z)&quot;
+e[which(e==&quot;high wind (g40)&quot;)] &lt;- &quot;High Wind (Z)&quot;
+e[which(e==&quot;high winds&quot;)] &lt;- &quot;High Wind (Z)&quot;
+e[which(e==&quot;high  winds&quot;)] &lt;- &quot;High Wind (Z)&quot;
+e[which(e==&quot;high winds heavy rains&quot;)] &lt;- &quot;High Wind (Z)&quot;
+e[which(e==&quot;hurricane&quot;)] &lt;- &quot;Hurricane/Typhoon (Z)&quot;
+e[which(e==&quot;hurricane edouard&quot;)] &lt;- &quot;Hurricane/Typhoon (Z)&quot;
+e[which(e==&quot;hurricane erin&quot;)] &lt;- &quot;Hurricane/Typhoon (Z)&quot;
+e[which(e==&quot;hurricane felix&quot;)] &lt;- &quot;Hurricane/Typhoon (Z)&quot;
+e[which(e==&quot;hurricane-generated swells&quot;)] &lt;- &quot;Hurricane/Typhoon (Z)&quot;
+e[which(e==&quot;hurricane opal&quot;)] &lt;- &quot;Hurricane/Typhoon (Z)&quot;
+e[which(e==&quot;hurricane opal/high winds&quot;)] &lt;- &quot;Hurricane/Typhoon (Z)&quot;
+e[which(e==&quot;hurricane/typhoon&quot;)] &lt;- &quot;Hurricane/Typhoon (Z)&quot;
+e[which(e==&quot;hvy rain&quot;)] &lt;- &quot;Heavy Rain (C)&quot;
+e[which(e==&quot;hyperthermia/exposure&quot;)] &lt;- &quot;Extreme Cold/Wind Chill (Z)&quot;
+e[which(e==&quot;hypothermia/exposure&quot;)] &lt;- &quot;Extreme Cold/Wind Chill (Z)&quot;
+e[which(e==&quot;ice&quot;)] &lt;- &quot;Frost/Freeze (Z)&quot;
+e[which(e==&quot;ice jam flooding&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;ice jam flood (minor&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;ice on road&quot;)] &lt;- &quot;Sleet (Z)&quot;
+e[which(e==&quot;ice roads&quot;)] &lt;- &quot;Sleet (Z)&quot;
+e[which(e==&quot;ice storm&quot;)] &lt;- &quot;Sleet (Z)&quot;
+e[which(e==&quot;ice/strong winds&quot;)] &lt;- &quot;Sleet (Z)&quot;
+e[which(e==&quot;icy roads&quot;)] &lt;- &quot;Sleet (Z)&quot;
+e[which(e==&quot;lake effect snow&quot;)] &lt;- &quot;Lake-Effect Snow (Z)&quot;
+e[which(e==&quot;lake-effect snow&quot;)] &lt;- &quot;Lake-Effect Snow (Z)&quot;
+e[which(e==&quot;lake flood&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;lakeshore flood&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;landslide&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;landslides&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;landslump&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;landspout&quot;)] &lt;- &quot;Waterspout (M)&quot;
+e[which(e==&quot;late season snow&quot;)] &lt;- &quot;Winter Weather (Z)&quot;
+e[which(e==&quot;light freezing rain&quot;)] &lt;- &quot;Sleet (Z)&quot;
+e[which(e==&quot;lightning&quot;)] &lt;- &quot;Lightning (C)&quot;
+e[which(e==&quot;lightning.&quot;)] &lt;- &quot;Lightning (C)&quot;
+e[which(e==&quot;lightning and heavy rain&quot;)] &lt;- &quot;Lightning (C)&quot;
+e[which(e==&quot;lightning and thunderstorm win&quot;)] &lt;- &quot;Lightning (C)&quot;
+e[which(e==&quot;lightning fire&quot;)] &lt;- &quot;Wildfire (Z)&quot;
+e[which(e==&quot;lightning injury&quot;)] &lt;- &quot;Lightning (C)&quot;
+e[which(e==&quot;lightning thunderstorm winds&quot;)] &lt;- &quot;Lightning (C)&quot;
+e[which(e==&quot;lightning  wauseon&quot;)] &lt;- &quot;Lightning (C)&quot;
+e[which(e==&quot;light snow&quot;)] &lt;- &quot;Winter Weather (Z)&quot;
+e[which(e==&quot;light snowfall&quot;)] &lt;- &quot;Winter Weather (Z)&quot;
+e[which(e==&quot;ligntning&quot;)] &lt;- &quot;Lightning (C)&quot;
+e[which(e==&quot;marine accident&quot;)] &lt;- &quot;Marine Strong Wind (M)&quot;
+e[which(e==&quot;marine hail&quot;)] &lt;- &quot;Marine Hail (M)&quot;
+e[which(e==&quot;marine high wind&quot;)] &lt;- &quot;Marine High Wind (M)&quot;
+e[which(e==&quot;marine mishap&quot;)] &lt;- &quot;Marine Strong Wind (M)&quot;
+e[which(e==&quot;marine strong wind&quot;)] &lt;- &quot;Marine Strong Wind (M)&quot;
+e[which(e==&quot;marine thunderstorm wind&quot;)] &lt;- &quot;Marine Thunderstorm Wind (M)&quot;
+e[which(e==&quot;marine tstm wind&quot;)] &lt;- &quot;Marine Thunderstorm Wind (M)&quot;
+e[which(e==&quot;microburst&quot;)] &lt;- &quot;Strong Wind (Z)&quot;
+e[which(e==&quot;mixed precip&quot;)] &lt;- &quot;Heavy Rain (C)&quot;
+e[which(e==&quot;mixed precipitation&quot;)] &lt;- &quot;Heavy Rain (C)&quot;
+e[which(e==&quot;mudslide&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;mud slide&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;mudslides&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;mud slides urban flooding&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;non-severe wind damage&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;non tstm wind&quot;)] &lt;- &quot;High Wind (Z)&quot;
+e[which(e==&quot;non-tstm wind&quot;)] &lt;- &quot;High Wind (Z)&quot;
+e[which(e==&quot;other&quot;)] &lt;- &quot;Heavy Rain (C)&quot;
+e[which(e==&quot;rain&quot;)] &lt;- &quot;Heavy Rain (C)&quot;
+e[which(e==&quot;rain/snow&quot;)] &lt;- &quot;Heavy Rain (C)&quot;
+e[which(e==&quot;rapidly rising water&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;record cold&quot;)] &lt;- &quot;Extreme Cold/Wind Chill (Z)&quot;
+e[which(e==&quot;record heat&quot;)] &lt;- &quot;Excessive Heat (Z)&quot;
+e[which(e==&quot;rip current&quot;)] &lt;- &quot;Rip Current (Z)&quot;
+e[which(e==&quot;rip currents&quot;)] &lt;- &quot;Rip Current (Z)&quot;
+e[which(e==&quot;rip currents/heavy surf&quot;)] &lt;- &quot;Rip Current (Z)&quot;
+e[which(e==&quot;river and stream flood&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;river flood&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;river flooding&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;rock slide&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;rogue wave&quot;)] &lt;- &quot;Seiche (Z)&quot;
+e[which(e==&quot;rough seas&quot;)] &lt;- &quot;High Surf (Z)&quot;
+e[which(e==&quot;rough surf&quot;)] &lt;- &quot;High Surf (Z)&quot;
+e[which(e==&quot;rural flood&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;seiche&quot;)] &lt;- &quot;Seiche (Z)&quot;
+e[which(e==&quot;severe thunderstorm&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;severe thunderstorms&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;severe thunderstorm winds&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;sleet&quot;)] &lt;- &quot;Sleet (Z)&quot;
+e[which(e==&quot;small hail&quot;)] &lt;- &quot;Hail (C)&quot;
+e[which(e==&quot;snow&quot;)] &lt;- &quot;Heavy Snow (Z)&quot;
+e[which(e==&quot;snow and ice&quot;)] &lt;- &quot;Heavy Snow (Z)&quot;
+e[which(e==&quot;snow freezing rain&quot;)] &lt;- &quot;Heavy Snow (Z)&quot;
+e[which(e==&quot;snow/ice&quot;)] &lt;- &quot;Heavy Snow (Z)&quot;
+e[which(e==&quot;snow/sleet/freezing rain&quot;)] &lt;- &quot;Heavy Snow (Z)&quot;
+e[which(e==&quot;snow squall&quot;)] &lt;- &quot;Heavy Snow (Z)&quot;
+e[which(e==&quot;snow squalls&quot;)] &lt;- &quot;Heavy Snow (Z)&quot;
+e[which(e==&quot;storm force winds&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;storm surge&quot;)] &lt;- &quot;Storm Tide (Z)&quot;
+e[which(e==&quot;storm surge/tide&quot;)] &lt;- &quot;Storm Tide (Z)&quot;
+e[which(e==&quot;strong wind&quot;)] &lt;- &quot;Strong Wind (Z)&quot;
+e[which(e==&quot;strong winds&quot;)] &lt;- &quot;Strong Wind (Z)&quot;
+e[which(e==&quot;thundeerstorm winds&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderestorm winds&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thundersnow&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm damage to&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorms wind&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorms winds&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstormw&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm wind&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm wind.&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm wind 60 mph&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm wind 65mph&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm wind 65 mph&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm wind 98 mph&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm wind/awning&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm wind (g40)&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm wind g52&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm wind g55&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm wind g60&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm wind/lightning&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm winds&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm  winds&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm winds53&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm winds 63 mph&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm winds and&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm winds/ flood&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm winds g60&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm windshail&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm winds hail&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm winds/hail&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm winds lightning&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm windss&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm wind/ tree&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm wind trees&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm wind/ trees&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunderstorm wins&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thundertorm winds&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;thunerstorm winds&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;tidal flooding&quot;)] &lt;- &quot;Coastal Flood (Z)&quot;
+e[which(e==&quot;tornado&quot;)] &lt;- &quot;Tornado (C)&quot;
+e[which(e==&quot;tornado f0&quot;)] &lt;- &quot;Tornado (C)&quot;
+e[which(e==&quot;tornado f1&quot;)] &lt;- &quot;Tornado (C)&quot;
+e[which(e==&quot;tornado f2&quot;)] &lt;- &quot;Tornado (C)&quot;
+e[which(e==&quot;tornado f3&quot;)] &lt;- &quot;Tornado (C)&quot;
+e[which(e==&quot;torrential rainfall&quot;)] &lt;- &quot;Heavy Rain (C)&quot;
+e[which(e==&quot;tropical depression&quot;)] &lt;- &quot;Tropical Depression (Z)&quot;
+e[which(e==&quot;tropical storm&quot;)] &lt;- &quot;Tropical Storm (Z)&quot;
+e[which(e==&quot;tropical storm dean&quot;)] &lt;- &quot;Tropical Storm (Z)&quot;
+e[which(e==&quot;tropical storm jerry&quot;)] &lt;- &quot;Tropical Storm (Z)&quot;
+e[which(e==&quot;tstm wind&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;tstm wind 40&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;tstm wind (41)&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;tstm wind 45&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;tstm wind 55&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;tstm wind 65)&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;tstm wind and lightning&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;tstm wind damage&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;tstm wind (g35)&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;tstm wind (g40)&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;tstm wind g45&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;tstm wind  (g45)&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;tstm wind (g45)&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;tstm wind g58&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;tstm wind/hail&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;tstm winds&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;tsunami&quot;)] &lt;- &quot;Tsunami (Z)&quot;
+e[which(e==&quot;tunderstorm wind&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;typhoon&quot;)] &lt;- &quot;Tropical Storm (Z)&quot;
+e[which(e==&quot;unseasonable cold&quot;)] &lt;- &quot;Cold/Wind Chill (Z)&quot;
+e[which(e==&quot;unseasonably cold&quot;)] &lt;- &quot;Cold/Wind Chill (Z)&quot;
+e[which(e==&quot;unseasonably warm&quot;)] &lt;- &quot;Heat (Z)&quot;
+e[which(e==&quot;unseasonably warm and dry&quot;)] &lt;- &quot;Heat (Z)&quot;
+e[which(e==&quot;unseasonal rain&quot;)] &lt;- &quot;Heavy Rain (C)&quot;
+e[which(e==&quot;urban and small stream floodin&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;urban flood&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;urban flooding&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;urban/small stream flood&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;urban/sml stream fld&quot;)] &lt;- &quot;Flood (C)&quot;
+e[which(e==&quot;volcanic ash&quot;)] &lt;- &quot;Volcanic Ash (Z)&quot;
+e[which(e==&quot;warm weather&quot;)] &lt;- &quot;Heat (Z)&quot;
+e[which(e==&quot;waterspout&quot;)] &lt;- &quot;Waterspout (M)&quot;
+e[which(e==&quot;waterspout tornado&quot;)] &lt;- &quot;Waterspout (M)&quot;
+e[which(e==&quot;waterspout-tornado&quot;)] &lt;- &quot;Waterspout (M)&quot;
+e[which(e==&quot;waterspout/tornado&quot;)] &lt;- &quot;Waterspout (M)&quot;
+e[which(e==&quot;waterspout/ tornado&quot;)] &lt;- &quot;Waterspout (M)&quot;
+e[which(e==&quot;wet microburst&quot;)] &lt;- &quot;Thunderstorm Wind (C)&quot;
+e[which(e==&quot;whirlwind&quot;)] &lt;- &quot;Tornado (C)&quot;
+e[which(e==&quot;wildfire&quot;)] &lt;- &quot;Wildfire (Z)&quot;
+e[which(e==&quot;wild fires&quot;)] &lt;- &quot;Wildfire (Z)&quot;
+e[which(e==&quot;wild/forest fire&quot;)] &lt;- &quot;Wildfire (Z)&quot;
+e[which(e==&quot;wild/forest fires&quot;)] &lt;- &quot;Wildfire (Z)&quot;
+e[which(e==&quot;wind&quot;)] &lt;- &quot;Strong Wind (Z)&quot;
+e[which(e==&quot;wind and wave&quot;)] &lt;- &quot;Strong Wind (Z)&quot;
+e[which(e==&quot;wind damage&quot;)] &lt;- &quot;Strong Wind (Z)&quot;
+e[which(e==&quot;winds&quot;)] &lt;- &quot;Strong Wind (Z)&quot;
+e[which(e==&quot;wind storm&quot;)] &lt;- &quot;Strong Wind (Z)&quot;
+e[which(e==&quot;winter storm&quot;)] &lt;- &quot;Strong Wind (Z)&quot;
+e[which(e==&quot;winter storm high winds&quot;)] &lt;- &quot;Strong Wind (Z)&quot;
+e[which(e==&quot;winter weather&quot;)] &lt;- &quot;Heavy Snow (Z)&quot;
+e[which(e==&quot;winter weather mix&quot;)] &lt;- &quot;Heavy Snow (Z)&quot;
+e[which(e==&quot;winter weather/mix&quot;)] &lt;- &quot;Heavy Snow (Z)&quot;
+e[which(e==&quot;wintry mix&quot;)] &lt;- &quot;Heavy Snow (Z)&quot;
+
+#rename the original EVTYPE and add e vector to data.frame as EVTYPE
+#names(stormdata)[8] &lt;- &quot;EVTYPE_ORIG&quot;
+stormdata$EVTYPE &lt;- NULL
+stormdata$EVTYPE &lt;- e</code></pre>
 </div>
 <div id="explore-the-health-data" class="section level2">
 <h2>Explore the health data</h2>
@@ -174,17 +510,17 @@ health_top10 &lt;- health[order(health$number_affected,
                              decreasing = TRUE),][1:10,]
 
 health_top10</code></pre>
-<pre><code>##                EVTYPE number_affected
-## 300           TORNADO           23310
-## 46     EXCESSIVE HEAT            8428
-## 65              FLOOD            7192
-## 187         LIGHTNING            5360
-## 312         TSTM WIND            3871
-## 118              HEAT            2954
-## 59        FLASH FLOOD            2668
-## 268 THUNDERSTORM WIND            1557
-## 363      WINTER STORM            1493
-## 163 HURRICANE/TYPHOON            1339</code></pre>
+<pre><code>##                   EVTYPE number_affected
+## 37           Tornado (C)           23329
+## 11    Excessive Heat (Z)            8430
+## 14             Flood (C)            7416
+## 36 Thunderstorm Wind (C)            6074
+## 26         Lightning (C)            5363
+## 19              Heat (Z)            3571
+## 13       Flash Flood (C)            2690
+## 35       Strong Wind (Z)            2071
+## 21        Heavy Snow (Z)            1616
+## 43          Wildfire (Z)            1545</code></pre>
 </div>
 <div id="explore-the-economic-damage-data" class="section level2">
 <h2>Explore the economic damage data</h2>
@@ -200,17 +536,17 @@ names(damage)[2] &lt;- &quot;damage&quot;
 damage_top10 &lt;- damage[order(damage$damage, decreasing = TRUE),][1:10,]
 
 damage_top10</code></pre>
-<pre><code>##                EVTYPE       damage
-## 65              FLOOD 149444847450
-## 163 HURRICANE/TYPHOON  71913712800
-## 254       STORM SURGE  43193541000
-## 300           TORNADO  25222315070
-## 103              HAIL  17659848370
-## 59        FLASH FLOOD  16709847310
-## 36            DROUGHT  14968172000
-## 156         HURRICANE  14554229010
-## 307    TROPICAL STORM   8331171550
-## 150         HIGH WIND   5893346660</code></pre>
+<pre><code>##                   EVTYPE       damage
+## 14             Flood (C) 150201991600
+## 24 Hurricane/Typhoon (Z)  90164972810
+## 34        Storm Tide (Z)  47845004000
+## 37           Tornado (C)  25227105470
+## 18              Hail (C)  17922523370
+## 13       Flash Flood (C)  16985131860
+## 8            Drought (Z)  14968177780
+## 36 Thunderstorm Wind (C)  10997252030
+## 39    Tropical Storm (Z)   8953276550
+## 43          Wildfire (Z)   8168274130</code></pre>
 </div>
 <div id="results" class="section level2">
 <h2>Results</h2>
