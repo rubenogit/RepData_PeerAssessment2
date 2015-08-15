@@ -144,89 +144,73 @@ library(lubridate)
 
 #Add a YEAR colum to the data
 stormdata$YEAR &lt;- year(mdy_hms(stormdata$BGN_DATE))
+
 #Take into account only the years for which we have more complete data
-#I set the year to be larger or equal to 1994
-complete_year &lt;- 1994
+#I set the year to be larger or equal to 1995
+complete_year &lt;- 1995
 stormdata &lt;- stormdata[which(stormdata$YEAR &gt;= complete_year),]
 
+#I only need to keep the rows where the health impact &gt; 0
+#or the damage &gt; 0
+stormdata &lt;- stormdata[which(stormdata$HEALTH &gt; 0 |
+                             stormdata$DAMAGE &gt; 0),]
+
+
+#unique(stormdata$EVTYPE)
 #house keeping
 rm(complete_year)</code></pre>
 </div>
 <div id="explore-the-health-data" class="section level2">
 <h2>Explore the health data</h2>
-<pre class="r"><code>#aggregate over health effects i.e. injuries
-#fatalities do no have an effect on population health
+<pre class="r"><code>#aggregate health effects over EVTYPE
 #use !is.na or na.rm to exclude NA's
-health_count &lt;- aggregate(HEALTH ~ EVTYPE, data=stormdata, function(x) length( !is.na(x)))
-health_sum &lt;- aggregate(HEALTH ~ EVTYPE, data=stormdata, function(x) sum(x, na.rm = TRUE))
-health_mean &lt;- aggregate(HEALTH ~ EVTYPE, data=stormdata, function(x) mean(x, na.rm = TRUE))
+health &lt;- aggregate(HEALTH ~ EVTYPE, data=stormdata, function(x) sum(x, na.rm = TRUE))
 
-names(health_count)[2] &lt;- &quot;number_events&quot;
-names(health_sum)[2] &lt;- &quot;number_affected&quot;
-names(health_mean)[2] &lt;- &quot;mean_number_affected&quot;
+names(health)[2] &lt;- &quot;number_affected&quot;
 
-#combine in one dataframe
-health &lt;- data.frame(health_count,
-                     health_sum[2],
-                     health_mean[2]
-                     )
-
-#house keeping
-rm(health_count, health_sum, health_mean)
-
-#calculate top10
-health_top10 &lt;- health[order(health$number_affected, decreasing = TRUE),][1:10,]
+#calculate top10:
+#order by number affected in decreasing order and take the first 10
+health_top10 &lt;- health[order(health$number_affected, 
+                             decreasing = TRUE),][1:10,]
 
 health_top10</code></pre>
-<pre><code>##                EVTYPE number_events number_affected mean_number_affected
-## 781           TORNADO         25274           24164           0.95608135
-## 115    EXCESSIVE HEAT          1678            8428           5.02264601
-## 154             FLOOD         24906            7228           0.29021119
-## 425         LIGHTNING         15287            5910           0.38660300
-## 804         TSTM WIND        128970            3872           0.03002249
-## 254              HEAT           759            3025           3.98550725
-## 139       FLASH FLOOD         53396            2705           0.05065923
-## 398         ICE STORM          1972            2057           1.04310345
-## 712 THUNDERSTORM WIND         82482            1609           0.01950729
-## 918      WINTER STORM         11403            1493           0.13093046</code></pre>
+<pre><code>##                EVTYPE number_affected
+## 300           TORNADO           23310
+## 46     EXCESSIVE HEAT            8428
+## 65              FLOOD            7192
+## 187         LIGHTNING            5360
+## 312         TSTM WIND            3871
+## 118              HEAT            2954
+## 59        FLASH FLOOD            2668
+## 268 THUNDERSTORM WIND            1557
+## 363      WINTER STORM            1493
+## 163 HURRICANE/TYPHOON            1339</code></pre>
 </div>
 <div id="explore-the-economic-damage-data" class="section level2">
 <h2>Explore the economic damage data</h2>
 <pre class="r"><code>#aggregate over economic damage
 #fatalities do no have an effect on population health
 #use !is.na or na.rm to exclude NA's
-damage_count &lt;- aggregate(DAMAGE ~ EVTYPE, data=stormdata, function(x) length( !is.na(x)))
-damage_sum &lt;- aggregate(DAMAGE ~ EVTYPE, data=stormdata, function(x) sum(x, na.rm = TRUE))
-damage_mean &lt;- aggregate(DAMAGE ~ EVTYPE, data=stormdata, function(x) mean(x, na.rm = TRUE))
+damage &lt;- aggregate(DAMAGE ~ EVTYPE, data=stormdata, function(x) sum(x, na.rm = TRUE))
 
-names(damage_count)[2] &lt;- &quot;number&quot;
-names(damage_sum)[2] &lt;- &quot;damage&quot;
-names(damage_mean)[2] &lt;- &quot;mean_damage&quot;
+names(damage)[2] &lt;- &quot;damage&quot;
 
-#combine in one dataframe
-damage &lt;- data.frame(damage_count,
-                     damage_sum[2],
-                     damage_mean[2]
-                     )
-
-#house keeping
-rm(damage_count,damage_sum, damage_mean)
-
-#calculate top10
+#calculate top10:
+#order by damage in decreasing order and take the first 10
 damage_top10 &lt;- damage[order(damage$damage, decreasing = TRUE),][1:10,]
 
 damage_top10</code></pre>
-<pre><code>##                EVTYPE number       damage  mean_damage
-## 154             FLOOD  24906 149686551250   6010059.88
-## 381 HURRICANE/TYPHOON     88  71913712800 817201281.82
-## 620       STORM SURGE    253  43193541000 170725458.50
-## 781           TORNADO  25274  25982192520   1028020.60
-## 224              HAIL 222616  18317742770     82284.04
-## 139       FLASH FLOOD  53396  17119054960    320605.57
-## 83            DROUGHT   2478  14968172000   6040424.54
-## 373         HURRICANE    171  14604229010  85404848.01
-## 398         ICE STORM   1972   8854491310   4490107.16
-## 794    TROPICAL STORM    686   8381226550  12217531.41</code></pre>
+<pre><code>##                EVTYPE       damage
+## 65              FLOOD 149444847450
+## 163 HURRICANE/TYPHOON  71913712800
+## 254       STORM SURGE  43193541000
+## 300           TORNADO  25222315070
+## 103              HAIL  17659848370
+## 59        FLASH FLOOD  16709847310
+## 36            DROUGHT  14968172000
+## 156         HURRICANE  14554229010
+## 307    TROPICAL STORM   8331171550
+## 150         HIGH WIND   5893346660</code></pre>
 </div>
 <div id="results" class="section level2">
 <h2>Results</h2>

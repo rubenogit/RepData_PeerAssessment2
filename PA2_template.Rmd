@@ -1,6 +1,6 @@
 ---
 title: "Effects of severe weather events in US on health and economy"
-output: pdf_document
+output: html_document
 ---
 
 <!---
@@ -86,11 +86,19 @@ library(lubridate)
 
 #Add a YEAR colum to the data
 stormdata$YEAR <- year(mdy_hms(stormdata$BGN_DATE))
+
 #Take into account only the years for which we have more complete data
-#I set the year to be larger or equal to 1994
-complete_year <- 1994
+#I set the year to be larger or equal to 1995
+complete_year <- 1995
 stormdata <- stormdata[which(stormdata$YEAR >= complete_year),]
 
+#I only need to keep the rows where the health impact > 0
+#or the damage > 0
+stormdata <- stormdata[which(stormdata$HEALTH > 0 |
+                             stormdata$DAMAGE > 0),]
+
+
+#unique(stormdata$EVTYPE)
 #house keeping
 rm(complete_year)
 
@@ -101,28 +109,16 @@ rm(complete_year)
 
 ```{r}
 
-#aggregate over health effects i.e. injuries
-#fatalities do no have an effect on population health
+#aggregate health effects over EVTYPE
 #use !is.na or na.rm to exclude NA's
-health_count <- aggregate(HEALTH ~ EVTYPE, data=stormdata, function(x) length( !is.na(x)))
-health_sum <- aggregate(HEALTH ~ EVTYPE, data=stormdata, function(x) sum(x, na.rm = TRUE))
-health_mean <- aggregate(HEALTH ~ EVTYPE, data=stormdata, function(x) mean(x, na.rm = TRUE))
+health <- aggregate(HEALTH ~ EVTYPE, data=stormdata, function(x) sum(x, na.rm = TRUE))
 
-names(health_count)[2] <- "number_events"
-names(health_sum)[2] <- "number_affected"
-names(health_mean)[2] <- "mean_number_affected"
+names(health)[2] <- "number_affected"
 
-#combine in one dataframe
-health <- data.frame(health_count,
-                     health_sum[2],
-                     health_mean[2]
-                     )
-
-#house keeping
-rm(health_count, health_sum, health_mean)
-
-#calculate top10
-health_top10 <- health[order(health$number_affected, decreasing = TRUE),][1:10,]
+#calculate top10:
+#order by number affected in decreasing order and take the first 10
+health_top10 <- health[order(health$number_affected, 
+                             decreasing = TRUE),][1:10,]
 
 health_top10
 ```
@@ -130,31 +126,15 @@ health_top10
 ##Explore the economic damage data
 
 ```{r}
-
-
-
-
 #aggregate over economic damage
 #fatalities do no have an effect on population health
 #use !is.na or na.rm to exclude NA's
-damage_count <- aggregate(DAMAGE ~ EVTYPE, data=stormdata, function(x) length( !is.na(x)))
-damage_sum <- aggregate(DAMAGE ~ EVTYPE, data=stormdata, function(x) sum(x, na.rm = TRUE))
-damage_mean <- aggregate(DAMAGE ~ EVTYPE, data=stormdata, function(x) mean(x, na.rm = TRUE))
+damage <- aggregate(DAMAGE ~ EVTYPE, data=stormdata, function(x) sum(x, na.rm = TRUE))
 
-names(damage_count)[2] <- "number"
-names(damage_sum)[2] <- "damage"
-names(damage_mean)[2] <- "mean_damage"
+names(damage)[2] <- "damage"
 
-#combine in one dataframe
-damage <- data.frame(damage_count,
-                     damage_sum[2],
-                     damage_mean[2]
-                     )
-
-#house keeping
-rm(damage_count,damage_sum, damage_mean)
-
-#calculate top10
+#calculate top10:
+#order by damage in decreasing order and take the first 10
 damage_top10 <- damage[order(damage$damage, decreasing = TRUE),][1:10,]
 
 damage_top10
