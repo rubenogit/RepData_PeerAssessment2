@@ -78,7 +78,7 @@ img {
 -->
 <div id="synopsis" class="section level2">
 <h2>Synopsis</h2>
-<p>In this analysis I explore the effects of severe weather events in the US on health and economy.</p>
+<p>In this analysis I explore the effects of severe weather events in the US on health and economy. Tornados are by far the most harmfull types of events across the United States, with respect to population health. Floods are the event types with the greatest economic consequences.</p>
 </div>
 <div id="data-processing" class="section level2">
 <h2>Data Processing</h2>
@@ -159,10 +159,13 @@ stormdata &lt;- stormdata[which(stormdata$HEALTH &gt; 0 |
 #unique(stormdata$EVTYPE)
 #house keeping
 rm(complete_year)</code></pre>
-<pre class="r"><code>#evtypes_orig &lt;- unique(tolower(trimws(as.character(stormdata$EVTYPE))))
-
+<p>Some more, slightly tedious, clean-up work needs to be done. The EVTYPE names are a mees and need to be renamed to the relevant official event type name. I assign each variant to an official event type.</p>
+<pre class="r"><code>#copy the event types to a vector:
+#turn levels into character, trim whitespaces and make all lowercase
 e &lt;- tolower(trimws(as.character(stormdata$EVTYPE)))
 
+#no for the brute force replacing
+#all variants remaining in the data have been mapped
 e[which(e==&quot;agricultural freeze&quot;)] &lt;- &quot;Frost/Freeze (Z)&quot;
 e[which(e==&quot;astronomical high tide&quot;)] &lt;- &quot;Storm Tide (Z)&quot;
 e[which(e==&quot;astronomical low tide&quot;)] &lt;- &quot;Astronomical Low Tide (Z)&quot;
@@ -491,13 +494,14 @@ e[which(e==&quot;winter weather mix&quot;)] &lt;- &quot;Heavy Snow (Z)&quot;
 e[which(e==&quot;winter weather/mix&quot;)] &lt;- &quot;Heavy Snow (Z)&quot;
 e[which(e==&quot;wintry mix&quot;)] &lt;- &quot;Heavy Snow (Z)&quot;
 
-#rename the original EVTYPE and add e vector to data.frame as EVTYPE
-#names(stormdata)[8] &lt;- &quot;EVTYPE_ORIG&quot;
+#drop original EVTYPE and add e vector to data.frame as EVTYPE
 stormdata$EVTYPE &lt;- NULL
 stormdata$EVTYPE &lt;- e</code></pre>
+<p>This completes the data preparation.</p>
 </div>
 <div id="explore-the-health-data" class="section level2">
 <h2>Explore the health data</h2>
+<p>Now I need to aggregate the health data per event type. I use the sum, because it is not the number of occurences or the mean number of people affected, but the total number that is important. Rare events with lots of health impact, or more common events with a small impact, can be most easily compared by taking into account the total number.</p>
 <pre class="r"><code>#aggregate health effects over EVTYPE
 #use !is.na or na.rm to exclude NA's
 health &lt;- aggregate(HEALTH ~ EVTYPE, data=stormdata, function(x) sum(x, na.rm = TRUE))
@@ -521,9 +525,11 @@ health_top10</code></pre>
 ## 35       Strong Wind (Z)            2071
 ## 21        Heavy Snow (Z)            1616
 ## 43          Wildfire (Z)            1545</code></pre>
+<p>The top 10 shows the event types with the greatest impact on population health.</p>
 </div>
 <div id="explore-the-economic-damage-data" class="section level2">
 <h2>Explore the economic damage data</h2>
+<p>For the economic damage I need to aggregate the damage amounts per event type. Just like with health effects, the sum is the best measure for comparing the ecomic impact of the different event types.</p>
 <pre class="r"><code>#aggregate over economic damage
 #fatalities do no have an effect on population health
 #use !is.na or na.rm to exclude NA's
@@ -547,6 +553,7 @@ damage_top10</code></pre>
 ## 36 Thunderstorm Wind (C)  10997252030
 ## 39    Tropical Storm (Z)   8953276550
 ## 43          Wildfire (Z)   8168274130</code></pre>
+<p>The top ten shows the event type with the greatest economic impact in US Dollars.</p>
 </div>
 <div id="results" class="section level2">
 <h2>Results</h2>
@@ -554,6 +561,8 @@ damage_top10</code></pre>
     Across the United States, which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?
     Across the United States, which types of events have the greatest economic consequences?
 -->
+<p>Tornados are by far the most harmfull types of events across the United States, with respect to population health, with a total of fataly and non-fataly injured of over 23000 since 1995. The event type Tornado is followed by Excessive Heat, Flood, Thunderstorm Wind and Lightning, with a combined total of about 27000 since 1995.</p>
+<p>Floods are the event types with the greatest economic consequences, with a total damage amount of over 150 billion US Dollar. This is followed by the Hurricane/Typhoon event type, that amounts to a damage of 90 billion US Dollar and Storm Tide with 48 billion US Dollar.</p>
 </div>
 
 
