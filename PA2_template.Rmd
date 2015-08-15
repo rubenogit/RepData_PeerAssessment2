@@ -110,7 +110,7 @@ Some more, slightly tedious, clean-up work needs to be done. The EVTYPE names ar
 #turn levels into character, trim whitespaces and make all lowercase
 e <- tolower(trimws(as.character(stormdata$EVTYPE)))
 
-#no for the brute force replacing
+#now some brute force replacing
 #all variants remaining in the data have been mapped
 e[which(e=="agricultural freeze")] <- "Frost/Freeze (Z)"
 e[which(e=="astronomical high tide")] <- "Storm Tide (Z)"
@@ -490,7 +490,19 @@ The top ten shows the event type with the greatest economic impact in US Dollars
     Across the United States, which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?
     Across the United States, which types of events have the greatest economic consequences?
 -->
-```{r}
+```{r fig.width = 8, fig.height = 8}
+par(mfrow = c(2, 1), mai=c(1,2,1,1))
+barplot(health_top10$number_affected[5:1],
+        main = "Effect on population health",
+        xlab = "Number of people fataly and non-fataly injured",
+        names.arg = health_top10$EVTYPE[5:1],
+        horiz = TRUE, las = 1)
+barplot(damage_top10$damage[5:1]/1000000000,
+        main = "Economic consequences",
+        xlab = "Damage in billions of US Dollars",
+        names.arg = damage_top10$EVTYPE[5:1],
+        horiz = TRUE, las = 1)
+
 ```
 
 Tornados are by far the most harmfull types of events across the United States, with respect to population health, with a total of fataly and non-fataly injured of over 23000 since 1995. The event type Tornado is followed by Excessive Heat, Flood, Thunderstorm Wind and Lightning, with a combined total of about 27000 since 1995.
